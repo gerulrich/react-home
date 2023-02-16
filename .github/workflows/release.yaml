@@ -1,0 +1,160 @@
+name: Release
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  update-version-in-repository:
+    name: Update version in repository
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    continue-on-error: false
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ env.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+      
+      - name: Test the app
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: test
+
+      - name: Build the app
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
+
+      - id: release
+        name: Get next app version
+        uses: rymndhng/release-on-push-action@master
+        with:
+          dry_run: true
+          bump_version_scheme: minor
+          tag_prefix: ''
+
+      - name: Update app version
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: version --new-version ${{ steps.release.outputs.version }}
+        env: 
+          YARN_VERSION_GIT_TAG: ''
+
+      - name: Commit version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "[AUTO] Release version ${{ steps.release.outputs.version }}"
+          git push origin master
+
+  create-release:
+    needs: update-version-in-repository
+    name: Create tag and release
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    continue-on-error: false
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ env.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - id: release
+        name: Create release on github
+        uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: minor
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          commit_prefix: "[AUTO] "
+          commit_message: "Release version ${{ steps.release.outputs.version }}"
+
+      - name: Create environment file
+        run: |
+          echo "VITE_APP_VERSION=$APP_VERSION"  > .env.production
+          echo "VITE_BACKEND_URL=$BACKEND_URL" >> .env.production
+          echo "VITE_DEEZER_URL=$DEEZER_URL"  >> .env.production
+          pwd
+          cat .env.production
+        env:
+          APP_VERSION: ${{ steps.release.outputs.version }}
+          BACKEND_URL: ${{ secrets.BACKEND_URL}}"
+          DEEZER_URL: ${{ secrets.DEEZER_URL}}"
+      
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+      
+      - name: Build the app
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build      
+      
+      - name: Create bundle
+        uses: a7ul/tar-action@v1.1.0
+        id: compress
+        with:
+          command: c
+          cwd: ./dist
+          files: |
+            index.html
+            assets
+            vite.svg
+          outPath: "react-home-build-${{ steps.release.outputs.version }}.tar.gz"
+
+      - name: Attach bundle into release
+        uses: AButler/upload-release-assets@v2.0
+        with:
+          files: "react-home-build-${{ steps.release.outputs.version }}.tar.gz"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: ${{ steps.release.outputs.version }}
+
+      - name: Invoke deployment hook
+        uses: distributhor/workflow-webhook@v2
+        env:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          webhook_auth: ${{ secrets.WEBHOOK_AUTH }}
+          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
+          data: '{ "app": "react-home", "version" : "${{ steps.release.outputs.version }}" }'
+
+  down-merge:
+    needs: create-release
+    name: Down merge
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: develop
+          token: ${{ env.GITHUB_TOKEN }}
+          fetch-depth: 0
+      - name: Merge master -> develop
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git merge origin/master
+          git push origin develop
