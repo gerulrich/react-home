@@ -11,10 +11,20 @@
     "test_watch": "jest --watchAll"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.11.9",
+    "@mui/lab": "^5.0.0-alpha.120",
+    "@mui/material": "^5.11.9",
     "@reduxjs/toolkit": "^1.9.2",
+    "@tabler/icons": "^1.84.0",
+    "apexcharts": "^3.37.0",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
+    "react-apexcharts": "^1.4.0",
     "react-dom": "^18.2.0",
-    "react-redux": "^8.0.5"
+    "react-redux": "^8.0.5",
+    "react-router-dom": "6"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",
@@ -28,6 +38,7 @@
     "jest": "^29.4.2",
     "jest-environment-jsdom": "^29.4.2",
     "vite": "^4.1.0",
-    "whatwg-fetch": "^3.6.2"
+    "whatwg-fetch": "^3.6.2",
+    "vite-plugin-svgr": "^2.4.0"
   }
 }
