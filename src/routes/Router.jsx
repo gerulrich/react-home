@@ -27,9 +27,6 @@ const UsersPage = Loadable(lazy(() => import('../views/settings/UsersPage')));
 
 
 
-const Icons = Loadable(lazy(() => import('../views/icons/Icons')));
-const TypographyPage = Loadable(lazy(() => import('../views/utilities/TypographyPage')));
-const Shadow = Loadable(lazy(() => import('../views/utilities/Shadow')));
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
 const Register = Loadable(lazy(() => import('../views/authentication/Register')));
 const Login = Loadable(lazy(() => import('../views/authentication/Login')));
@@ -42,30 +39,17 @@ export const Router = [
     children: [
       { path: '/', element: <Navigate to="/dashboard" /> },
       { path: '/dashboard', exact: true, element: <Dashboard /> },
-      
       // TV 
       { path: '/live-tv', exact: true, element: <LiveTvPage /> },
-      
-      
       // Music
       { path: '/music/search', exact: true, element: <SearchPage /> },
       { path: '/music/search/artist/:artistId', exact: true, element: <ArtistPage /> },
       { path: '/music/search/artist/:artistId/album/:albumId', exact: true, element: <AlbumPage /> },
       { path: '/music/explore', exact: true, element: <LocalMusicPage /> },
-      
-      { path: '/icons', exact: true, element: <Icons /> },
-      
-      
+      // Settings      
       { path: '/settings/channels', exact: true, element: <ChannelsPage /> },
       { path: '/settings/tags/', exact: true, element: <MusicTagsPage /> },
       { path: '/settings/users/', exact: true, element: <UsersPage /> },
-      
-      { path: '/ui/typography', exact: true, element: <TypographyPage /> },
-      { path: '/ui/shadow', exact: true, element: <Shadow /> },
-
-
-      
-
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
