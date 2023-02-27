@@ -1,32 +1,18 @@
-import reactLogo from './assets/react.svg'
-import './App.css'
-import { useDispatch, useSelector } from 'react-redux';
-import { increment } from './store/slices/counter';
-import.meta.env.MODE
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { useRoutes } from 'react-router-dom';
+import Router from './routes/Router';
 
-export const App = () => {
-  
-  const {counter} = useSelector((state) => state.counter);
-  const dispatch = useDispatch();
-  const version = import.meta.env.VITE_APP_VERSION;
-  
+import { baselightTheme } from "./theme/DefaultColors";
+
+function App() {
+  const routing = useRoutes(Router);
+  const theme = baselightTheme;
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <span>Version {version}</span>
-      <div className="card">
-        <button onClick={() => dispatch(increment())}>
-          count is {counter}
-        </button>
-      </div>
-    </div>
-  )
-};
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {routing}
+    </ThemeProvider>
+  );
+}
+
+export default App;
