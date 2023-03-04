@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo } from 'react';
 import {
     Box,
     Typography,
@@ -6,13 +6,34 @@ import {
     FormControlLabel,
     Button,
     Stack,
-    Checkbox
+    Checkbox,
+    Alert
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
+import { useForm } from '../../../hooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { checkingAuthentication, startLoginWithEmailPassword } from '../../../store/slices/auth/thunks';
 
-const AuthLogin = ({ title, subtitle, subtext }) => (
+const AuthLogin = ({ title, subtitle, subtext }) => {
+
+    const {status, errorMessage} = useSelector(state => state.auth);
+    const dispatch = useDispatch();
+    const {email, password, onInputChange} = useForm({
+        email: '',
+        password: ''
+    });
+
+    const isAuthenticating = useMemo( () => status === 'checking', [status]);
+
+    const onSubmit = (event) => {
+        event.preventDefault();
+        dispatch(startLoginWithEmailPassword({email, password}));
+    }
+
+
+    return (
     <>
         {title ? (
             <Typography fontWeight="700" variant="h2" mb={1}>
@@ -22,16 +43,35 @@ const AuthLogin = ({ title, subtitle, subtext }) => (
 
         {subtext}
 
+        <Alert severity='error' style={{display : !!errorMessage ? '' : 'none'}}>
+            {errorMessage}
+        </Alert>
+
+        <form onSubmit={onSubmit}>
         <Stack>
             <Box>
                 <Typography variant="subtitle1"
                     fontWeight={600} component="label" htmlFor='username' mb="5px">Username</Typography>
-                <CustomTextField id="username" variant="outlined" fullWidth />
+                <CustomTextField 
+                    id="email"
+                    variant="outlined"
+                    name="email"
+                    value={email}
+                    onChange={onInputChange}
+                    fullWidth
+                     />
             </Box>
             <Box mt="25px">
                 <Typography variant="subtitle1"
                     fontWeight={600} component="label" htmlFor='password' mb="5px" >Password</Typography>
-                <CustomTextField id="password" type="password" variant="outlined" fullWidth />
+                <CustomTextField
+                    id="password"
+                    type="password"
+                    variant="outlined"
+                    name="password"
+                    value={password}
+                    onChange={onInputChange}
+                    fullWidth />
             </Box>
             <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
                 <FormGroup>
@@ -55,19 +95,19 @@ const AuthLogin = ({ title, subtitle, subtext }) => (
         </Stack>
         <Box>
             <Button
+                disabled={isAuthenticating}
                 color="primary"
                 variant="contained"
                 size="large"
                 fullWidth
-                component={Link}
-                to="/"
                 type="submit"
             >
                 Sign In
             </Button>
         </Box>
+        </form>
         {subtitle}
     </>
-);
+)};
 
 export default AuthLogin;

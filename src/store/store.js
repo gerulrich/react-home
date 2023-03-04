@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { counterSlice } from './slices/counter'
+import { audioPlayerSlice } from './audioPlayerSlice'
+import { authSlice } from './slices/auth'
 
 export const store = configureStore({
     reducer: {
-        counter: counterSlice.reducer,
+        auth: authSlice.reducer,
+        player: audioPlayerSlice.reducer
     },
 })

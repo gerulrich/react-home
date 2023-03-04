@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Grid, Stack, Typography } from '@mui/material';
-import { CloudDownload } from '@mui/icons-material';
+import { Checkbox, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { Bookmark, BookmarkBorder, CloudDownload, Delete } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import DashboardCard from '../../../components/shared/DashboardCard';
 
@@ -32,8 +32,21 @@ export const AlbumDownloadCard = ({album, onStartDownload}) => {
             <Grid item xs={12} md={4} lg={3}><img src={album.cover_medium}/></Grid>
             <Grid item xs={12} md={6} lg={6}>
                 <Typography variant='h3'>{album.title}</Typography>
+                
+                <Grid item sx={12}>
+                    <Checkbox
+                        {..."Añadir a la lista de descargas"}
+                        icon={<BookmarkBorder />}
+                        checkedIcon={<Bookmark />}
+                    />
+                </Grid>
+                
                 <Stack spacing={3} mt={5} direction="column">
                     <Stack direction="row" spacing={1} alignItems="center">
+                        
+                        
+                        
+                        
                         <LoadingButton
                                 disabled={downloadingFlac || downloadingMP3}
                                 loading={downloadingFlac}
