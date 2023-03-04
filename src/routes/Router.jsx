@@ -25,12 +25,7 @@ const ChannelsPage = Loadable(lazy(() => import('../views/settings/ChannelsPage'
 const MusicTagsPage = Loadable(lazy(() => import('../views/settings/MusicTagsPage')));
 const UsersPage = Loadable(lazy(() => import('../views/settings/UsersPage')));
 
-
-
-const Error = Loadable(lazy(() => import('../views/authentication/Error')));
-const Register = Loadable(lazy(() => import('../views/authentication/Register')));
-const Login = Loadable(lazy(() => import('../views/authentication/Login')));
-
+const TodosPage = Loadable(lazy(() => import('../views/todos/TodoPage')));
 
 export const Router = [
   {
@@ -46,23 +41,15 @@ export const Router = [
       { path: '/music/search/artist/:artistId', exact: true, element: <ArtistPage /> },
       { path: '/music/search/artist/:artistId/album/:albumId', exact: true, element: <AlbumPage /> },
       { path: '/music/explore', exact: true, element: <LocalMusicPage /> },
-      // Settings      
+      // Settings
       { path: '/settings/channels', exact: true, element: <ChannelsPage /> },
       { path: '/settings/tags/', exact: true, element: <MusicTagsPage /> },
       { path: '/settings/users/', exact: true, element: <UsersPage /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
+      // Others
+      { path: '/todos', exact: true, element: <TodosPage /> },
+      { path: '*', element: <Navigate to="/" /> },
     ],
   },
-  {
-    path: '/auth',
-    element: <BlankLayout />,
-    children: [
-      { path: '404', element: <Error /> },
-      { path: '/auth/register', element: <Register /> },
-      { path: '/auth/login', element: <Login /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
-    ],
-  }
 ];
 
 export default Router;

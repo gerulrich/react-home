@@ -10,6 +10,7 @@ import {
   ListItemText,
   useTheme
 } from '@mui/material';
+import { TablerIcons } from '../../../../components/icons/TablerIcons';
 
 const NavItem = ({ item, level, pathDirect, onClick }) => {
   const Icon = item.icon;
@@ -58,7 +59,7 @@ const NavItem = ({ item, level, pathDirect, onClick }) => {
             color: 'inherit',
           }}
         >
-          {itemIcon}
+          <TablerIcons icon={item.icon}/>
         </ListItemIcon>
         <ListItemText>
           <>{item.title}</>

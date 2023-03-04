@@ -1,10 +1,21 @@
 import { useMediaQuery, Box, Drawer } from '@mui/material';
+import { styled } from '@mui/system';
+import { useSelector } from 'react-redux';
 import Logo from '../shared/logo/Logo';
 import SidebarItems from './SidebarItems';
+
+
+const FooterPlayerMargin = styled('div')(() => ({
+  minHeight: '7vh',
+  width: '100%',
+}));
+
 
 const Sidebar = (props) => {
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
+
+  const {songs} = useSelector(state => state.player);
 
   const sidebarWidth = '270px';
 
@@ -49,7 +60,8 @@ const Sidebar = (props) => {
               {/* Sidebar Items */}
               {/* ------------------------------------------- */}
               <SidebarItems />
-              {/*<Upgrade />*/}
+              <FooterPlayerMargin 
+                style={{display: songs.length > 0 ? '' : 'none'}}/>
             </Box>
             
           </Box>
@@ -81,7 +93,8 @@ const Sidebar = (props) => {
       {/* Sidebar For Mobile */}
       {/* ------------------------------------------- */}
       <SidebarItems />
-      {/*<Upgrade />*/}
+      <FooterPlayerMargin 
+          style={{display: songs.length > 0 ? '' : 'none'}}/>
     </Drawer>
   );
 };

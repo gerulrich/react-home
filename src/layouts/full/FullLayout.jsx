@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { styled, Container, Box } from '@mui/material';
+import { Paper, Grid, styled, Container, Box, BottomNavigation, Slide, IconButton } from '@mui/material';
+import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
-
 
 import Header from './header/Header';
 import Sidebar from './sidebar/Sidebar';
+import { Pause, PlayArrow } from "@mui/icons-material";
+import { AudioControl } from "../../player/audio/AudioControl";
 
 const MainWrapper = styled('div')(() => ({
   display: 'flex',
@@ -21,15 +23,35 @@ const PageWrapper = styled('div')(() => ({
   backgroundColor: 'transparent',
 }));
 
+
+const FixedFooter = styled(Grid)(({theme}) => ({
+  position: 'fixed',
+  left: 0,
+  right: 0,
+  bottom: 0,
+  width: '100%',
+  textAlign: 'center',
+  minHeight: '70px',
+  zIndex: 10000,
+  opacity: 0.9,
+  backgroundColor: 'white',
+  border: '1px solid',
+  borderColor: theme.palette.grey[200],
+  borderRadius: 0
+}));
+
 const FullLayout = () => {
 
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-
+  const {songs} = useSelector(state => state.player);
+  
+  
   return (
+    <>
     <MainWrapper
       className='mainwrapper'
-    >
+      >
       {/* ------------------------------------------- */}
       {/* Sidebar */}
       {/* ------------------------------------------- */}
@@ -66,6 +88,19 @@ const FullLayout = () => {
         </Container>
       </PageWrapper>
     </MainWrapper>
+
+        <Slide direction="up" in={songs.length > 0}>
+            <FixedFooter 
+                justifyContent='center'
+                direction="row"
+                alignItems="center"
+                container
+            >
+                <AudioControl />
+            </FixedFooter>
+        </Slide>
+
+    </>
   );
 };
 
