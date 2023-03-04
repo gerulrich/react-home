@@ -1,9 +1,3 @@
-import { MusicNoteTwoTone } from '@mui/icons-material';
-import LibraryMusicOutlinedIcon from '@mui/icons-material/LibraryMusicOutlined';
-import {
-  IconBrandSpotify, IconDeviceTv, IconDeviceTvOld, IconFileMusic, IconLayoutDashboard, IconTags, IconUsers
-} from '@tabler/icons';
-
 import { uniqueId } from 'lodash';
 
 const Menuitems = [
@@ -14,10 +8,9 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: 'Dashboard',
-    icon: IconLayoutDashboard,
+    icon: 'IconLayoutDashboard',
     href: '/dashboard',
   },
-
   {
     navlabel: true,
     subheader: 'TV',
@@ -25,7 +18,7 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: 'Tv en vivo',
-    icon: IconDeviceTv,
+    icon: 'IconDeviceTv',
     href: '/live-tv',
   },
   {
@@ -35,14 +28,24 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: 'Buscar',
-    icon: IconBrandSpotify,
+    icon: 'IconBrandSpotify',
     href: '/music/search',
   },
   {
     id: uniqueId(),
-    title: 'Mi collección',
-    icon: IconFileMusic,
+    title: 'Mi colección',
+    icon: 'IconFileMusic',
     href: '/music/explore',
+  },
+  {
+    navlabel: true,
+    subheader: 'varios',
+  },  
+  {
+    id: uniqueId(),
+    title: 'Tareas',
+    icon: 'IconLayoutKanban',
+    href: 'todos',
   },
   {
     navlabel: true,
@@ -51,19 +54,19 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: 'Usuarios',
-    icon: IconUsers,
+    icon: 'IconUsers',
     href: '/settings/users',
   },
   {
     id: uniqueId(),
     title: 'Canales',
-    icon: IconDeviceTvOld,
+    icon: 'IconDeviceTvOld',
     href: '/settings/channels',
   },
   {
     id: uniqueId(),
     title: 'Music Tags',
-    icon: IconTags,
+    icon: 'IconTags',
     href: '/settings/tags',
   },
   
