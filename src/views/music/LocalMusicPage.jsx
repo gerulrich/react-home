@@ -2,10 +2,13 @@ import { Box, Button, CardContent, Fab, Grid, Stack, Tooltip, Typography } from 
 import { IconPlayerPlay } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import QueueIcon from '@mui/icons-material/Queue';
+import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
+import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 import PageContainer from "../../components/container/PageContainer";
 import BlankCard from "../../components/shared/BlankCard";
 import DashboardCard from "../../components/shared/DashboardCard";
-import { addSongsToQueue, setCurrentSong, setPlayPause } from "../../store/audioPlayerSlice";
+import { addSongsToQueue, setCurrentSong, setPlayPause } from "../../store/slices/player";
 
 export const LocalMusicPage = () => {
     
@@ -13,7 +16,11 @@ export const LocalMusicPage = () => {
     const [albums, setAlbums] = useState([]);
     const [page, setPage] = useState(0);
 
-    const onPlayAlbum = (album) => {
+    const onQueueSongs = (album) => {
+        dispatch(addSongsToQueue({songs: album.tracks, replace: false, play: true}));
+    }
+
+    const onPlaySongs = (album) => {
         dispatch(addSongsToQueue({songs: album.tracks, replace: true, play: true}));
     }
     
@@ -23,10 +30,7 @@ export const LocalMusicPage = () => {
     }
 
     useEffect(() => {
-        getMusicCollection().then(result => { 
-            setAlbums(result.albums);
-            console.log(result);
-        });
+        getMusicCollection().then(result =>  setAlbums(result.albums));
     }, [page]);
 
 
@@ -54,16 +58,29 @@ export const LocalMusicPage = () => {
                                         <img src={album.cover_url} alt="img" width="100%" />
                                     </Typography>
 
-                                    <Tooltip title="Play">
+                                    <Tooltip title="Reproducir">
                                         <Fab
                                             size="small"
                                             color="primary"
                                             sx={{ bottom: '75px', left: '15px', position: 'absolute' }}
-                                            onClick={() => onPlayAlbum(album)}
+                                            onClick={() => onPlaySongs(album)}
                                         >
                                             <IconPlayerPlay size="16" />
                                         </Fab>
-                                        </Tooltip>
+                                    </Tooltip>
+
+                                    <Tooltip title="Agregar a la cola">
+                                        <Fab
+                                            size="small"
+                                            color="primary"
+                                            sx={{ bottom: '75px', left: '60px', position: 'absolute' }}
+                                            onClick={() => onQueueSongs(album)}
+                                        >
+                                            <PlaylistPlayIcon size="16" />
+                                        </Fab>
+                                    </Tooltip>
+
+
 
                                     <CardContent sx={{ p: 3, pt: 2 }}>
                                         <Stack direction="column" alignItems="flex-start" justifyContent="space-between" mt={1}>

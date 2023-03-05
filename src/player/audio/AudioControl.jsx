@@ -7,9 +7,8 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 import { Badge, Box, Grid, IconButton, Slider, styled, Typography, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux"
-import { setPlayPause, setDuration, setPosition, setCurrentSong } from "../../store/audioPlayerSlice";
+import { setDuration, setPosition, setCurrentSong, setPlayPause } from "../../store/slices/player";
 import { useRef } from "react";
-
 
 const TinyText = styled(Typography)({
     fontSize: '0.75rem',
@@ -37,7 +36,6 @@ export const AudioControl = () => {
     }
 
     useEffect(() => {
-        console.log(`isPlaying has changed to ${isPlaying}`)
         if (isPlaying) {
             audioPlayer.current.play();
         } else {
@@ -46,25 +44,19 @@ export const AudioControl = () => {
     }, [isPlaying, audioPlayer?.current?.readyState]);
 
     useEffect(() => {
-        console.log(`CurrentSong has changed to ${currentSong}`)
         if (currentSong >= 0 && currentSong < songs.length && isPlaying) {
-            console.log("Updating audio src ...")
-            audioPlayer.current.src = songs[currentSong].media_url;
-            audioPlayer.current.play();
+            if (audioPlayer.current.src !== songs[currentSong].media_url) {
+                audioPlayer.current.src = songs[currentSong].media_url;
+                if (isPlaying) {
+                    audioPlayer.current.play();
+                } else {
+                    audioPlayer.current.pause();
+                }
+            }
         } else {
-            console.log("psuse[currentSong]")
             audioPlayer.current.pause();
         }
-    }, [currentSong]);
-
-    useEffect(() => {
-        console.log("ready state");
-        if (isPlaying) {
-            console.log(audioPlayer.current.src);
-            //audioPlayer.current.play();
-        }
-    }, [audioPlayer?.current?.loadedmetadata, audioPlayer?.current?.readyState])
-    
+    }, [currentSong, songs]);
 
     const backThirty = () => {
         const newPosition = (position < 30) ? 0 : (position -30);
