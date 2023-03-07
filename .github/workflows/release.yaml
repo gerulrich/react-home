@@ -97,9 +97,9 @@ jobs:
           pwd
           cat .env.production
         env:
-          APP_VERSION: ${{ steps.release.outputs.version }}
-          BACKEND_URL: ${{ secrets.BACKEND_URL}}"
-          DEEZER_URL: ${{ secrets.DEEZER_URL}}"
+          APP_VERSION: ${{steps.release.outputs.version }}
+          BACKEND_URL: ${{secrets.BACKEND_URL}}
+          DEEZER_URL: ${{secrets.DEEZER_URL}}
       
       - name: Run install
         uses: borales/actions-yarn@v4
