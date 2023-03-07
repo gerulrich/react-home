@@ -7,7 +7,7 @@ export const audioPlayerSlice = createSlice({
         currentSong: -1,
         isPlaying: false,
         paused: false,
-        duration: 200,
+        duration: 0,
         position: 0
     },
     reducers: {
@@ -25,20 +25,20 @@ export const audioPlayerSlice = createSlice({
         addSongsToQueue: (state, {payload}) => {
             if (!!payload.replace) {
                 state.songs = [...payload.songs];
+                state.currentSong = 0;
+                state.position = 0;
             } else {
                 state.songs = [...state.songs, ...payload.songs];
             }
             if (payload.play && !!payload.replace) {
                 state.isPlaying = payload.play;
-                state.currentSong = 0;
-            }            
+            }
         },
         setCurrentSong: (state, {payload}) => {
             state.currentSong = payload.currentSong;
         }
     }
 });
-
 
 // Action creators are generated for each case reducer function
 export const { setPlayPause, setPosition, setDuration, addSongsToQueue, setCurrentSong } = audioPlayerSlice.actions;

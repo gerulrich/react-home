@@ -7,7 +7,7 @@ import DashboardCard from "../../components/shared/DashboardCard";
 export const MusicTagsPage = () => {
     
     return (
-        <PageContainer title="Dashboard" description="this is Dashboard">
+        <PageContainer title="Music Tags">
             <Box>
                 <Grid container spacing={3}>
                     <Grid item xs={12} lg={12}>

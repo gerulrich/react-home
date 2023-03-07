@@ -5,7 +5,7 @@ import DashboardCard from "../../components/shared/DashboardCard";
 
 export const TodoPage = () => {
   return (
-    <PageContainer title="Dashboard" description="this is Dashboard">
+    <PageContainer title="Lista de tareas">
     <Box>
         <Grid container spacing={3}>
             <Grid item xs={12} lg={12}>

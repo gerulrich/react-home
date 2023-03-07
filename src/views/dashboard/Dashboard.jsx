@@ -9,7 +9,7 @@ import CpuTemperatureCard from './components/CpuTemperatureCard';
 
 const Dashboard = () => {
   return (
-    <PageContainer title="Dashboard" description="this is Dashboard">
+    <PageContainer title="Dashboard">
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={4}>

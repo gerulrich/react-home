@@ -1,12 +1,10 @@
-import React, { useState } from "react";
-import { Paper, Grid, styled, Container, Box, BottomNavigation, Slide, IconButton } from '@mui/material';
+import { useState } from "react";
 import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
-
+import { Grid, styled, Container, Box, Slide } from '@mui/material';
 import Header from './header/Header';
 import Sidebar from './sidebar/Sidebar';
-import { Pause, PlayArrow } from "@mui/icons-material";
-import { AudioControl } from "../../player/audio/AudioControl";
+import { AudioPlayer } from "../../player/audio/AudioPlayer";
 
 const MainWrapper = styled('div')(() => ({
   display: 'flex',
@@ -96,7 +94,7 @@ const FullLayout = () => {
                 alignItems="center"
                 container
             >
-                <AudioControl />
+                <AudioPlayer />
             </FixedFooter>
         </Slide>
 

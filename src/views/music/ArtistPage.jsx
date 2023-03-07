@@ -73,7 +73,7 @@ const ArtistPage = () => {
             </Grid>
 
 
-            {/** Albums Gid **/}
+            {/** Albums Grid **/}
             <Grid container spacing={3} mt={0.5}>
                 {result.albums.map((album, index) => (
                 <Grid item sm={12} md={4} lg={3} key={index}>
