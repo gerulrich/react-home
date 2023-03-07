@@ -1,44 +1,37 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button, InputAdornment, OutlinedInput, Pagination, Typography, CardContent, Grid, Stack } from '@mui/material';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { IconSearch } from '@tabler/icons';
-import { useForm } from '../../hooks/useForm';
 import BlankCard from '../../components/shared/BlankCard';
 import PageContainer from '../../components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
+import { usePagingSearch } from '../../hooks/usePagingSearch';
 
 
 const SearchPage = () => {
   
-    const navigate = useNavigate();
-    const [params] = useSearchParams();
-    const [page, setPage] = useState(parseInt(params.get('page')) || 1);
-    const [artist, setArtist] = useState(params.get('q') || '');
-    const [result, setResult] = useState({albums: [], pages: 0, current: 0 });
-    const [showError, setShowError] = useState(false);
-    const {searchText, onInputChange} = useForm({ searchText: artist });
-    const showPagination = artist !== '' && result.pages > 0;
-    const showSearch = artist === '';
+    const {
+        page,
+        searchValue,
+        result,
+        setResult,
+        searchText,
+        onInputChange,
+        onPageChange,
+        onSearchSubmit
+    } = usePagingSearch();
 
-    const onSearchSubmit = (event) => {
-        event.preventDefault();
-        navigate(`?q=${ searchText }`)
-        setArtist(searchText);
-        setPage(1);
-    };
-
-    const onPageChange = (event, value) => {
-        navigate(`?q=${ searchText }&page=${ value }`)
-        setPage(value);
-    }
+    const [showError, setShowError] = useState(false);    
+    const showPagination = searchValue !== '' && result.pages > 0;
+    const showSearch = searchValue === '';
 
     useEffect(() => {
         setShowError(false);
-        getAlbumsByArtistName(artist, page).then(result => {
-            setShowError(result.pages === 0 && artist.length > 0)
+        getAlbumsByArtistName(searchValue, page).then(result => {
+            setShowError(result.pages === 0 && searchValue.length > 0)
             setResult(result)
         });
-    }, [artist, page]);
+    }, [searchValue, page]);
 
     const getAlbumsByArtistName = async (name = '', page = 1) => {
         name = name.toLocaleLowerCase().trim();
@@ -59,7 +52,7 @@ const SearchPage = () => {
     
     return (
         <>
-            <PageContainer title="React Home - Musica" description="this is Sample page">
+            <PageContainer title="React Home - Musica">
                 <DashboardCard title="Buscar en deezer">
                     <form onSubmit={onSearchSubmit}>
                         <Grid container alignItems="flex-start" direction="row" >
@@ -97,7 +90,7 @@ const SearchPage = () => {
                                 sx={{ color: (theme) => theme.palette.warning.main }}
                                 style={{display: showError ? '' : 'none'}}
                                 >
-                                No se encontraton resultados para el termino {artist}
+                                No se encontraton resultados para el termino {searchValue}
                             </Typography>
                         </Grid>
                     </form>
@@ -113,7 +106,7 @@ const SearchPage = () => {
                     {result.albums.map((album, index) => (
                         <Grid item sm={12} md={4} lg={3} key={index}>
                             <BlankCard>
-                                <Typography component={Link} to={`/music/search/artist/${artist.id}/album/${album.id}`}>
+                                <Typography component={Link} to={`/music/search/artist/${album.artist.id}/album/${album.id}`}>
                                     <img src={album.cover_xl} alt="img" width="100%" />
                                 </Typography>
                                 <CardContent sx={{ p: 3, pt: 2 }}>
