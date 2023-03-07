@@ -40,7 +40,7 @@ const SearchPage = () => {
             pages: 0,
             current: 0
         };
-        const deezer_url = import.meta.env.VITE_DEEZER_URL;
+        const deezer_url = import.meta.env.VITE_DEEZER_URL.trim();
         const response = await fetch(`${deezer_url}/search/album?q=${name}&index=${(page-1) * 25}`);
         const data = await response.json();
         return {

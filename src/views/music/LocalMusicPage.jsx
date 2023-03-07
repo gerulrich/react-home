@@ -48,7 +48,7 @@ export const LocalMusicPage = () => {
 
 
     const getMusicCollection = async(filter = '', page = 1) => {
-        const api_url = import.meta.env.VITE_BACKEND_URL;
+        const api_url = import.meta.env.VITE_BACKEND_URL.trim();
         const response = await fetch(`${api_url}/music/albums?q=${filter}&limit=25&offset=${(page -1)*25}`);
         const data = await response.json();
         return {

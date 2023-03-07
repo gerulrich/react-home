@@ -37,7 +37,7 @@ const AlbumPage = () => {
     }
 
     const getAlbumById = async (albumId) => {
-        const deezer_url = import.meta.env.VITE_DEEZER_URL;
+        const deezer_url = import.meta.env.VITE_DEEZER_URL.trim();
         const response = await fetch(`${deezer_url}/album/${albumId}`);
         return await response.json();
     }
@@ -45,7 +45,7 @@ const AlbumPage = () => {
     const startDownload = async(format) => {
         setOutput([]);
         setShowConsole(true);
-        const deezer_url = import.meta.env.VITE_DEEZER_URL;
+        const deezer_url = import.meta.env.VITE_DEEZER_URL.trim();
         const response = await fetch(`${deezer_url}/download`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
