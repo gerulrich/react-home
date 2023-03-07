@@ -6,7 +6,7 @@ import SidebarItems from './SidebarItems';
 
 
 const FooterPlayerMargin = styled('div')(() => ({
-  minHeight: '7vh',
+  minHeight: '11vh',
   width: '100%',
 }));
 

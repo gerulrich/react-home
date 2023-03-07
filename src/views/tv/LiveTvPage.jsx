@@ -36,7 +36,7 @@ const LiveTvPage = () => {
     }
 
     return (
-        <PageContainer title="Dashboard" description="this is Dashboard">
+        <PageContainer title="TV en directo">
             <Box>
                 <Grid container spacing={3}>
                     <Grid item xs={12} lg={8}>

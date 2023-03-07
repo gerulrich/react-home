@@ -14,12 +14,14 @@ const Header = (props) => {
     justifyContent: 'center',
     backdropFilter: 'blur(4px)',
     [theme.breakpoints.up('lg')]: {
-      minHeight: '70px',
+      minHeight: '50px',
     },
   }));
   const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
     width: '100%',
     color: theme.palette.text.secondary,
+    borderBottom: '1px solid',
+    borderColor: theme.palette.grey[200],
   }));
 
   return (

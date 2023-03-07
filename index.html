@@ -15,6 +15,16 @@
         font-family: "Roboto", sans-serif;
         margin: 0;
       }
+      .rotate{
+        animation: rotate 3.0s linear infinite;
+      }
+      @keyframes rotate{
+        to{ transform: rotate(360deg); }
+      }
+
+      .paused {
+        animation-play-state: paused;
+      }
     </style>
   </head>
   <body>

@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-//import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet';
 
-const PageContainer = ({ title, description, children }) => (
+const PageContainer = ({ title, children }) => (
   <div>
-    {/*<Helmet>*/}
+    <Helmet>
       <title>{title}</title>
-      <meta name="description" content={description} />
-    {/*</Helmet>*/}
+    </Helmet>
     {children}
   </div>
 );

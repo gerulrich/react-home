@@ -6,7 +6,7 @@ import Logo from '../../layouts/full/shared/logo/Logo';
 import AuthRegister from './auth/AuthRegister';
 
 const Register2 = () => (
-  <PageContainer title="Register" description="this is Register page">
+  <PageContainer title="Register">
     <Box
       sx={{
         position: 'relative',
