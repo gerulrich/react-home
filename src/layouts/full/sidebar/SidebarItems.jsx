@@ -1,11 +1,11 @@
-import React from 'react';
+import { memo } from 'react';
 import Menuitems from './MenuItems';
 import { useLocation } from 'react-router';
 import { Box, List } from '@mui/material';
 import NavGroup from './NavGroup/NavGroup';
 import NavItem from './NavItem/NavItem';
 
-const SidebarItems = () => {
+const SidebarItems = memo(() => {
   const { pathname } = useLocation();
   const pathDirect = pathname;
   
@@ -28,5 +28,5 @@ const SidebarItems = () => {
       </List>
     </Box>
   );
-};
+});
 export default SidebarItems;
