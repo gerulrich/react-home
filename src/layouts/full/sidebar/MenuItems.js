@@ -45,7 +45,7 @@ const Menuitems = [
     id: uniqueId(),
     title: 'Tareas',
     icon: 'IconLayoutKanban',
-    href: 'todos',
+    href: '/todos',
   },
   {
     navlabel: true,
