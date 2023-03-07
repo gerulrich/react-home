@@ -28,13 +28,13 @@ const ArtistPage = () => {
     }
 
     const getArtistById = async(artistId) => {
-        const deezer_url = import.meta.env.VITE_DEEZER_URL;
+        const deezer_url = import.meta.env.VITE_DEEZER_URL.trim();
         const response = await fetch(`${deezer_url}/artist/${artistId}`);
         return await response.json();
     }
 
     const getAlbumByArtistId = async(artistId, page) => {
-        const deezer_url = import.meta.env.VITE_DEEZER_URL;
+        const deezer_url = import.meta.env.VITE_DEEZER_URL.trim();
         const response = await fetch(`${deezer_url}/artist/${artistId}/albums?index=${(page-1)*25}`);
         const data = await response.json();
         return {
