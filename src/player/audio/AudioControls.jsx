@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
+import { useEffect } from "react";
 import { Box, Grid, IconButton, Slider, styled, Typography, useTheme } from "@mui/material";
 import { Pause, PlayArrow } from "@mui/icons-material";
 import FastRewindIcon from '@mui/icons-material/FastRewind';
@@ -25,6 +26,15 @@ export const AudioControls = ({audioPlayer}) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const {isPlaying, duration, position, songs, currentSong} = useSelector(status => status.player);
+
+    useEffect(() => {
+        navigator.mediaSession.setActionHandler("play", () => onPlayPause());
+        navigator.mediaSession.setActionHandler("pause", () => onPlayPause());
+        navigator.mediaSession.setActionHandler("seekbackward", () => backThirty());
+        navigator.mediaSession.setActionHandler("seekforward", () => forwardThirty());
+        navigator.mediaSession.setActionHandler("previoustrack", () => onPrevTrack());
+        navigator.mediaSession.setActionHandler("nexttrack", () => onNextTrack());
+    }, [currentSong]);
     
     const onPlayPause = () => dispatch(setPlayPause({play: !isPlaying}));
     const backThirty = () => audioPlayer.current.currentTime = (position < 30) ? 0 : (position -30);
@@ -43,8 +53,8 @@ export const AudioControls = ({audioPlayer}) => {
         if (nextSong < songs.length) {
             dispatch(setCurrentSong({currentSong: nextSong}));
         }
-    }    
-    
+    }
+
     return (
         <Grid container
             width="100%"

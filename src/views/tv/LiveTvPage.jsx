@@ -2,45 +2,43 @@ import { useState } from 'react';
 import { Box, Grid } from '@mui/material';
 import PageContainer from '../../components/container/PageContainer';
 import { ChannelList } from '../../components/player/ChannelList';
-import { ShakaPlayer } from '../../components/player/ShakaPlayer';
+import { ShakaPlayerComponent } from '../../components/player/ShakaPlayerComponent';
+import { useEffect } from 'react';
+import { homeApi } from '../../api/homeApi';
 
 
 const LiveTvPage = () => {
     
-    const [state, setState] = useState({
-        channels: [
-            {
-                name: "Opción 1",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/240px-Telegram_logo.svg.png"
-            },
-            {
-                name: "Opción 2",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/240px-Telegram_logo.svg.png"
-            },
-            {
-                name: "Opción 3",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/240px-Telegram_logo.svg.png"
-            },
-        ],
-        selected: {
-            name: "Opción 1",
-            logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/240px-Telegram_logo.svg.png"
-        }
-    });
+    const [state, setState] = useState({channels: [], selected: {}});
 
     const onSelectChannel = (channel) => {
+        console.log(channel);
         setState({
             ...state,
             selected: channel
         })
     }
 
+    useEffect(() => {
+        getChannels().then(resp => {
+            setState( {
+                ...state,
+                channels: resp.channels,
+            })
+        })
+    }, [])
+
+    const getChannels = async () => {
+        const { data } = await homeApi.get('/tv/channels');
+        return { channels: data.channels }
+    }    
+
     return (
         <PageContainer title="TV en directo">
             <Box>
                 <Grid container spacing={3}>
                     <Grid item xs={12} lg={8}>
-                        <ShakaPlayer media={state.selected} />
+                        <ShakaPlayerComponent media={state.selected} />
                     </Grid>
                     <Grid item xs={12} lg={4}>
                         <ChannelList channels={state.channels} setChannel={onSelectChannel}/>

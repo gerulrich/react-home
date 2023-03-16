@@ -8,6 +8,7 @@ import BlankCard from "../../components/shared/BlankCard";
 import { addSongsToQueue } from "../../store/slices/player";
 import { usePagingSearch } from "../../hooks/usePagingSearch";
 import { useState } from "react";
+import { homeApi } from "../../api/homeApi";
 
 export const LocalMusicPage = () => {
     
@@ -34,6 +35,7 @@ export const LocalMusicPage = () => {
                 let artist = album.artist;
                 let album_name = album.title;
                 album.tracks.forEach(track => {
+                    // TODO eliminar cuando estén todas las validaciones
                     track['cover_url'] = cover_url;
                     track['album_name'] = album_name;
                     if (!('artist' in track)) {
@@ -48,9 +50,7 @@ export const LocalMusicPage = () => {
 
 
     const getMusicCollection = async(filter = '', page = 1) => {
-        const api_url = import.meta.env.VITE_BACKEND_URL;
-        const response = await fetch(`${api_url}/music/albums?q=${filter}&limit=25&offset=${(page -1)*25}`);
-        const data = await response.json();
+        const { data } = await homeApi.get(`/music/albums?q=${filter}&limit=25&offset=${(page -1)*25}`);
         return {
             albums: data.albums,
             pages: Math.ceil(data.total/25),

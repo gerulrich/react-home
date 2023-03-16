@@ -8,7 +8,7 @@ export const ChannelItem = ({channel, setChannel}) => {
     <>
         <ListItem alignItems="flex-start" onClick={() => {setChannel(channel)}} component={Link}>
             <ListItemAvatar>
-                <Avatar variant="square" alt={channel.name} src={channel.logo}/>
+                <Avatar alt={channel.name} src={channel.logo}/>
             </ListItemAvatar>
             <ListItemText
                 primary={channel.name}

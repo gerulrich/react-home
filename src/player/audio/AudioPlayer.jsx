@@ -22,6 +22,22 @@ export const AudioPlayer = () => {
                 audioPlayer.current.src = songs[currentSong].media_url;
                 isPlaying ? audioPlayer.current.play() : audioPlayer.current.pause();
             }
+            
+            if ("mediaSession" in navigator) {
+                if (currentSong >= 0 && isPlaying) {
+                    const song = songs[currentSong];
+                    const metadata = {
+                        title: song.title,
+                        artist: song.artist,
+                        album: song.album,
+                        artwork: [{
+                            src: song.cover_url
+                        }]
+                    }
+                    console.log(metadata);
+                    navigator.mediaSession.metadata = new MediaMetadata(metadata);
+                }
+            }
         } else {
             audioPlayer.current.pause();
         }
@@ -42,6 +58,8 @@ export const AudioPlayer = () => {
         }
     }
 
+
+  
     return (
         <>
             <audio 
