@@ -15,10 +15,11 @@ import { IconListCheck, IconMail, IconUser } from '@tabler/icons';
 
 import ProfileImg from '../../../assets/images/profile/user-1.jpg';
 import { useDispatch } from 'react-redux';
-import { startLogout } from '../../../store/slices/auth/thunks';
+import { useAuthStore } from '../../../hooks/useAuthStore';
 
 const Profile = () => {
-  const dispatch = useDispatch();
+  const {startLogout} = useAuthStore();
+
   const [anchorEl2, setAnchorEl2] = useState(null);
   const handleClick2 = (event) => {
     setAnchorEl2(event.currentTarget);
@@ -26,10 +27,6 @@ const Profile = () => {
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
-
-  const onLogout = () => {
-      dispatch(startLogout());
-  }
 
   return (
     <Box>
@@ -94,7 +91,7 @@ const Profile = () => {
           <Button 
             variant="outlined"
             color="primary"
-            onClick={onLogout}
+            onClick={() => startLogout()}
             fullWidth>
             Logout
           </Button>

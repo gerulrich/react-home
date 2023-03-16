@@ -5,20 +5,25 @@ import Router from './routes/Router';
 import AuthRouter from './routes/AuthRouter';
 
 import { baselightTheme } from "./theme/DefaultColors";
-import { useCheckAuth } from './hooks';
+import { useAuthStore } from './hooks/useAuthStore';
+import { useEffect } from 'react';
 
 function App() {
   const routing = useRoutes(Router);
   const authRouting = useRoutes(AuthRouter);
   const theme = baselightTheme;
 
-  const status = useCheckAuth();
+  const {status, checkAuthToken} = useAuthStore();
+
+  useEffect(() => {
+    checkAuthToken();
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      { /** TODO crear un AppRouter y meter toda la logica del router ahi */
-        status === 'checkin' 
+      { /** TODO crear un AppRouter y meter toda la logica del router ahi junto con el useAuthStore */
+        status === 'checking'
         ? (<CheckinAuth/>)
         : status === 'not-authenticated' ? (<>{authRouting}</>) : (<>{routing}</>)
       }

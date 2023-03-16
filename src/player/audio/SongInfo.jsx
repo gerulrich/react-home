@@ -23,7 +23,13 @@ export const SongInfo = ({songs, currentSong, isPlaying}) => {
             <Grid item m={1}>
                 <Stack direction="column" alignItems="flex-start" justifyContent="flex-start">
                     <Typography sx={{fontWeight: 'bold'}} variant="body1">{song?.title}</Typography>
-                    <Typography variant="body1">{song?.artist}</Typography>
+                    <Typography variant="body1"
+                        style={{width: '200px',
+                            overflow: 'hidden',
+                             whiteSpace: 'nowrap',
+                             textOverflow: 'ellipsis',
+                             textAlign:'left'}}
+                    >{song?.artist}</Typography>
                     <Typography variant="body2">{song?.album_name}</Typography>
                 </Stack>            
             </Grid>
