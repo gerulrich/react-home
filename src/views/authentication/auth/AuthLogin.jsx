@@ -1,4 +1,6 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
     Box,
     Typography,
@@ -9,29 +11,26 @@ import {
     Checkbox,
     Alert
 } from '@mui/material';
-import { Link } from 'react-router-dom';
 
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
-import { useForm } from '../../../hooks';
-import { useDispatch, useSelector } from 'react-redux';
-import { checkingAuthentication, startLoginWithEmailPassword } from '../../../store/slices/auth/thunks';
+import { useForm, useAuthStore } from '../../../hooks';
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
 
     const {status, errorMessage} = useSelector(state => state.auth);
-    const dispatch = useDispatch();
     const {email, password, onInputChange} = useForm({
         email: '',
         password: ''
     });
 
+    const {startLogin} = useAuthStore();
+
     const isAuthenticating = useMemo( () => status === 'checking', [status]);
 
     const onSubmit = (event) => {
         event.preventDefault();
-        dispatch(startLoginWithEmailPassword({email, password}));
+        startLogin({email, password});
     }
-
 
     return (
     <>
