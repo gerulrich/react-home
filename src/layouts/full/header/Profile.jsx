@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -8,14 +7,10 @@ import {
   IconButton,
   MenuItem,
   ListItemIcon,
-  ListItemText
-} from '@mui/material';
-
+  ListItemText} from '@mui/material';
 import { IconListCheck, IconMail, IconUser } from '@tabler/icons';
-
-import ProfileImg from '../../../assets/images/profile/user-1.jpg';
-import { useDispatch } from 'react-redux';
-import { useAuthStore } from '../../../hooks/useAuthStore';
+import ProfileImg from 'src/assets/images/profile/user-1.jpg';
+import { useAuthStore } from 'src/hooks';
 
 const Profile = () => {
   const {startLogout} = useAuthStore();
