@@ -1,8 +1,12 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { CardContent, Fab, Grid, IconButton, InputAdornment, OutlinedInput, Pagination, Stack, Tooltip, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { CardContent, Chip, Fab, Grid, IconButton, InputAdornment, OutlinedInput, Pagination, SpeedDial, SpeedDialAction, SpeedDialIcon, Stack, Tooltip, Typography } from "@mui/material";
 import { IconGridDots, IconList, IconPlayerPlay, IconSearch } from "@tabler/icons";
 import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import PageContainer from "../../components/container/PageContainer";
 import BlankCard from "../../components/shared/BlankCard";
 import { addSongsToQueue } from "../../store/slices/player";
@@ -12,6 +16,7 @@ import { homeApi } from "../../api/homeApi";
 
 export const LocalMusicPage = () => {
     
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const [gridMode, setGridMode] = useState(false);
     const {
@@ -28,6 +33,13 @@ export const LocalMusicPage = () => {
     const onQueueSongs = (album) => dispatch(addSongsToQueue({songs: album.tracks, replace: false, play: true}));
     const onPlaySongs = (album) => dispatch(addSongsToQueue({songs: album.tracks, replace: true, play: true}));
     
+    const onDeleteAlbum = async(album) => {
+        await homeApi.delete(`/music/albums/${album.uid}`);
+        const {total, albums} = result;
+        var filtered = albums.filter(a => a.uid != album.uid); 
+        setResult({albums: filtered, total: (total-1)});
+    }
+
     useEffect(() => {
         getMusicCollection(searchValue, page).then(result =>  {
             result.albums.forEach(album => {
@@ -102,31 +114,58 @@ export const LocalMusicPage = () => {
                         <Typography>
                             <img src={album.cover_url} alt="img" width="100%" />
                         </Typography>
+                        
+                        <SpeedDial
+                            ariaLabel="SpeedDial basic example"
+                            sx={{ '& .MuiFab-primary': { width: 40, height: 40 },bottom: '75px', left: '15px', position: 'absolute' }}
+                            icon={<SpeedDialIcon size="16"/>}
+                        >
+                            <SpeedDialAction
+                                icon={<PlaylistPlayIcon size="16" />}
+                                tooltipTitle="Agregar a la lista"
+                                onClick={() => onQueueSongs(album)}
+                            />
+                            
+                            <SpeedDialAction
+                                icon={<EditIcon size="16" />}
+                                tooltipTitle="Editar"
+                            />
+
+                            <SpeedDialAction
+                                icon={<DeleteIcon size="16" />}
+                                tooltipTitle="Eliminar"
+                                onClick={() => onDeleteAlbum(album)}
+                            />
+                            
+                        </SpeedDial>
+                        
+                        {
+                            album.format == 'FLAC' || album.format == 'MP3_320'
+                            ? (<Chip 
+                                icon={<MusicNoteIcon />} label={album.format.replace('_', ' ').toLowerCase()} size="small"
+                                sx={{ top: '10px', right: '10px', position: 'absolute' }}
+                                color="primary"
+                                />)
+                            :(<></>)
+                        }
+
+                        
+                        
                         <Tooltip title="Reproducir">
                             <Fab
                                 size="small"
                                 color="primary"
-                                sx={{ bottom: '75px', left: '15px', position: 'absolute' }}
+                                sx={{ bottom: '75px', left: '70px', position: 'absolute' }}
                                 onClick={() => onPlaySongs(album)}
                             >
                                 <IconPlayerPlay size="16" />
                             </Fab>
                         </Tooltip>
 
-                        <Tooltip title="Agregar a la lista">
-                            <Fab
-                                size="small"
-                                color="primary"
-                                sx={{ bottom: '75px', left: '60px', position: 'absolute' }}
-                                onClick={() => onQueueSongs(album)}
-                            >
-                                <PlaylistPlayIcon size="16" />
-                            </Fab>
-                        </Tooltip>
                         <CardContent sx={{ p: 3, pt: 2 }}>
                             <Stack direction="column" alignItems="flex-start" justifyContent="space-between" mt={1}>
-                                <Typography variant="span" sx={{ textDecoration: 'bold' }}>{album.title}</Typography>
-                                <Typography mt={1} variant="caption">Publicado el {album.release_date}</Typography>
+                                <Typography variant="span" sx={{ textDecoration: 'bold' }}>{album.artist}</Typography>
+                                <Typography variant="span" sx={{fontWeight: 'bold'}}>{album.title}</Typography>                                
                             </Stack>
                         </CardContent>
                     </BlankCard>

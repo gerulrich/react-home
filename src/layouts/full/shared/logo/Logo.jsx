@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
-import { ReactComponent as LogoDark } from '../../../../assets/images/logos/dark-logo.svg';
+import { ReactComponent as LogoDark } from 'src/assets/images/logos/dark-logo.svg';
+import { ReactComponent as LogoLight } from 'src/assets/images/logos/light-logo.svg';
 import { styled } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 const LinkStyled = styled(Link)(() => ({
   height: '70px',
@@ -10,9 +12,12 @@ const LinkStyled = styled(Link)(() => ({
 }));
 
 const Logo = () => {
+  const {darkMode} = useSelector(state => state.ui);
   return (
     <LinkStyled to="/">
-      <LogoDark height={70} />
+      {
+        darkMode ? (<LogoLight height={70} />) : (<LogoDark height={70} />)
+      }      
     </LinkStyled>
   )
 };
