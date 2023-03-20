@@ -1,6 +1,5 @@
 import { Fragment } from "react"
-import { Button, Grid, IconButton, ListItem, ListItemText, Typography } from "@mui/material"
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { Grid, ListItem, ListItemText, Typography } from "@mui/material"
 import { Stack } from "@mui/system";
 
 export const TrackItem = ({track}) => {

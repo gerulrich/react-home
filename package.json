@@ -27,7 +27,8 @@
     "react-helmet": "^6.1.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "6",
-    "shaka-player-react": "^1.1.5"
+    "shaka-player-react": "^1.1.5",
+    "socket.io-client": "^4.6.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",

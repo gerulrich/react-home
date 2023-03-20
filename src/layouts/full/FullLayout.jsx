@@ -32,9 +32,9 @@ const FixedFooter = styled(Grid)(({theme}) => ({
   minHeight: '70px',
   zIndex: 10000,
   opacity: 0.9,
-  backgroundColor: 'white',
+  backgroundColor: theme.palette.background.default,
   border: '1px solid',
-  borderColor: theme.palette.grey[200],
+  borderColor: theme.palette.divider,
   borderRadius: 0
 }));
 
@@ -86,7 +86,6 @@ const FullLayout = () => {
         </Container>
       </PageWrapper>
     </MainWrapper>
-
         <Slide direction="up" in={songs.length > 0}>
             <FixedFooter 
                 justifyContent='center'
@@ -97,7 +96,6 @@ const FullLayout = () => {
                 <AudioPlayer />
             </FixedFooter>
         </Slide>
-
     </>
   );
 };

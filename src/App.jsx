@@ -1,26 +1,38 @@
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import { useEffect } from 'react';
 import { useRoutes } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { io } from "socket.io-client";
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import AuthRouter from './routes/AuthRouter';
+import { appendDownloadLog } from './store/slices';
+import { baselightTheme, basedarkTheme } from "./theme";
 import { CheckinAuth } from './components/ui';
 import Router from './routes/Router';
-import AuthRouter from './routes/AuthRouter';
-
-import { baselightTheme } from "./theme/DefaultColors";
-import { useAuthStore } from './hooks/useAuthStore';
-import { useEffect } from 'react';
+import { useAuthStore } from './hooks';
 
 function App() {
   const routing = useRoutes(Router);
   const authRouting = useRoutes(AuthRouter);
-  const theme = baselightTheme;
-
+  const dispatch = useDispatch();
   const {status, checkAuthToken} = useAuthStore();
 
+
+  const {darkMode} = useSelector(state => state.ui);
   useEffect(() => {
     checkAuthToken();
   }, [])
 
+  useEffect(() => {
+    if (status == 'authenticated') {
+      const token = localStorage.getItem('token');
+      const socket = io(import.meta.env.VITE_BACKEND_URL, { extraHeaders: { "x-token": token }} );
+      socket.on('tag', ( payload ) =>  console.log('Code:', payload ));
+      socket.on('download-progress', ( payload ) => dispatch(appendDownloadLog(payload)));
+    }
+  }, [status]);
+
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={darkMode ? basedarkTheme : baselightTheme}>
       <CssBaseline />
       { /** TODO crear un AppRouter y meter toda la logica del router ahi junto con el useAuthStore */
         status === 'checking'
