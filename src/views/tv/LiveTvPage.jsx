@@ -12,7 +12,6 @@ const LiveTvPage = () => {
     const [state, setState] = useState({channels: [], selected: {}});
 
     const onSelectChannel = (channel) => {
-        console.log(channel);
         setState({
             ...state,
             selected: channel

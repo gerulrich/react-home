@@ -4,7 +4,6 @@ import { Stack } from "@mui/system";
 
 export const TrackItem = ({track}) => {
   
-  
     const toTime = (seconds) => {
         var date = new Date(null);
         date.setSeconds(seconds);
@@ -18,8 +17,8 @@ export const TrackItem = ({track}) => {
                     <Fragment>
                         <Grid container direction="row">
                             <Stack direction="row" spacing={3}>
-                                <Typography>{track.title_short}</Typography>
-                                <Typography>{!!track.title_version ? track.title_version: ''}</Typography>
+                                <Typography>{track.title}</Typography>
+                                <Typography>{!!track.comments ? track.comments: ''}</Typography>
                             </Stack>
                         </Grid>
                         <Grid>

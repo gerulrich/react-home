@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material"
 import  {
-    IconBrandSpotify,
+    IconBrandDeezer,
     IconDeviceTv,
     IconDeviceTvOld,
     IconError404,
@@ -9,14 +9,14 @@ import  {
     IconLayoutKanban,
     IconTags,
     IconUsers
-} from  "@tabler/icons"
+} from  "@tabler/icons-react"
 
 
 export const TablerIcons = (props) => {
     const { icon } = props
 
     const icons = {
-      'IconBrandSpotify' : IconBrandSpotify,
+      'IconBrandDeezer': IconBrandDeezer,
       'IconDeviceTv': IconDeviceTv,
       'IconDeviceTvOld': IconDeviceTvOld,
       'IconFileMusic': IconFileMusic,

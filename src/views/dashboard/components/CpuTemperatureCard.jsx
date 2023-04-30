@@ -1,5 +1,5 @@
 import { Stack, Typography, Avatar, Fab, useTheme } from '@mui/material';
-import { IconTemperatureCelsius, IconTemperature } from '@tabler/icons';
+import { IconTemperatureCelsius, IconTemperature } from '@tabler/icons-react';
 import Chart from 'react-apexcharts';
 import DashboardCard from '../../../components/shared/DashboardCard';
 

@@ -28,7 +28,7 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: 'Buscar',
-    icon: 'IconBrandSpotify',
+    icon: 'IconBrandDeezer',
     href: '/music/search',
   },
   {

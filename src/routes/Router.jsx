@@ -11,10 +11,12 @@ const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')))
 // DashBoards
 const Dashboard = Loadable(lazy(() => import('../views/dashboard/Dashboard')));
 // Music
-const SearchPage = Loadable(lazy(() => import('../views/music/SearchPage')));
-const ArtistPage = Loadable(lazy(() => import('../views/music/ArtistPage')));
-const AlbumPage = Loadable(lazy(() => import('../views/music/AlbumPage')));
+const DeezerSearchPage = Loadable(lazy(() => import('../views/music/deezer/DeezerSearchPage')));
+const DeezerArtistPage = Loadable(lazy(() => import('../views/music/deezer/DeezerArtistPage')));
+const DeezerAlbumPage = Loadable(lazy(() => import('../views/music/deezer/DeezerAlbumPage')));
 const LocalMusicPage = Loadable(lazy(() => import('../views/music/LocalMusicPage')));
+const EditAlbumPage = Loadable(lazy(() => import('../views/music/EditAlbumPage')));
+const LocalAlbumPage = Loadable(lazy(() => import('../views/music/LocalAlbumPage')));
 
 // TV 
 const LiveTvPage = Loadable(lazy(() => import('../views/tv/LiveTvPage')));
@@ -37,10 +39,12 @@ export const Router = [
       // TV 
       { path: '/live-tv', exact: true, element: <LiveTvPage /> },
       // Music
-      { path: '/music/search', exact: true, element: <SearchPage /> },
-      { path: '/music/search/artist/:artistId', exact: true, element: <ArtistPage /> },
-      { path: '/music/search/artist/:artistId/album/:albumId', exact: true, element: <AlbumPage /> },
+      { path: '/music/search', exact: true, element: <DeezerSearchPage /> },
+      { path: '/music/search/artist/:artistId', exact: true, element: <DeezerArtistPage /> },
+      { path: '/music/search/artist/:artistId/album/:albumId', exact: true, element: <DeezerAlbumPage /> },
       { path: '/music/explore', exact: true, element: <LocalMusicPage /> },
+      { path: '/music/explore/album/edit/:albumId', exact: true, element: <EditAlbumPage /> },
+      { path: '/music/explore/album/:albumId', exact: true, element: <LocalAlbumPage /> },
       // Settings
       { path: '/settings/channels', exact: true, element: <ChannelsPage /> },
       { path: '/settings/tags/', exact: true, element: <MusicTagsPage /> },
