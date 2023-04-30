@@ -34,7 +34,6 @@ export const AudioPlayer = () => {
                             src: song.cover_url
                         }]
                     }
-                    console.log(metadata);
                     navigator.mediaSession.metadata = new MediaMetadata(metadata);
                 }
             }

@@ -3,7 +3,7 @@ import { Box, AppBar, Toolbar, styled, Stack, IconButton, Badge, Switch, FormCon
 import PropTypes from 'prop-types';
 
 import Profile from './Profile';
-import { IconBellRinging, IconMenu } from '@tabler/icons';
+import { IconBellRinging, IconMenu } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDarkMode } from '../../../store/slices/ui/uiSlice';
 

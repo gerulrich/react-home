@@ -2,17 +2,18 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Grid } from '@mui/material';
-import PageContainer from '../../components/container/PageContainer';
-import { AlbumDownloadCard } from './components/AlbumDownloadCard';
-import { AlbumTracksCard } from './components/AlbumTracksCard';
-import { appendDownloadLog, startDownload } from '../../store/slices/';
-import { Terminal } from '../../ui/components/Terminal';
+import { AlbumDownloadCard } from '../components/AlbumDownloadCard';
+import { AlbumTracksCard } from '../components/AlbumTracksCard';
+import { appendDownloadLog, startDownload } from '../../../store/slices';
+import { Terminal } from '../../../ui/components/Terminal';
+import { deezerApi } from '../../../api/deezerApi';
+import PageContainer from '../../../components/container/PageContainer';
 
 const AlbumPage = () => {
     
     const { albumId } = useParams();
     const [showConsole, setShowConsole] = useState(false);
-    const [album, setAlbum] = useState({ title: '', cover_medium: '', tracks: { data: [] }, artist: { name: '' }})
+    const [album, setAlbum] = useState({ title: '', cover_url: '', tracks: [], artist: ''})
 
     const dispatch = useDispatch();
     const { output } = useSelector( state => state.music );
@@ -22,25 +23,26 @@ const AlbumPage = () => {
     }, []);
 
     const getAlbumById = async (albumId) => {
-        const deezer_url = import.meta.env.VITE_DEEZER_URL;
-        const response = await fetch(`${deezer_url}/album/${albumId}`);
-        return await response.json();
+        const album = await (await deezerApi.get(`/album/${albumId}`)).data;
+        return {
+            id: albumId,
+            title: album.title,
+            artist: album.artist.name,
+            cover_url: album.cover_medium,
+            tracks: album.tracks.data.map((track, index) => ({
+                title: track.title_short,
+                duration: track.duration,
+                comments: track.title_version ? track.title_version : '',
+                media_url: track.preview,
+                track_number: (index+1)
+            }))
+        };
     }
 
     const onStartDownload = async(format) => {
-        dispatch(startDownload({album:albumId, format}));
-        const deezer_url = import.meta.env.VITE_DEEZER_URL;
+        dispatch(startDownload({ album:albumId, format }));
         const user = JSON.parse(localStorage.getItem('user'));
-        const response = await fetch(`${deezer_url}/download`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                album: `${album.id}`,
-                format,
-                uid: user.uid
-            })
-        });
-        const {date, level, message} = await response.json();
+        const {date, level, message} = await deezerApi.post('/download', { album: `${album.id}`, format, uid: user.uid });
         dispatch(appendDownloadLog({date, level, message}))
     }
     
@@ -56,7 +58,7 @@ const AlbumPage = () => {
                     </Grid>
                     {/**  Track list **/}
                     <Grid item xs={12}>
-                        <AlbumTracksCard tracks={album.tracks.data} />
+                        <AlbumTracksCard tracks={album.tracks} />
                     </Grid>
                 </Grid>
             </Box>

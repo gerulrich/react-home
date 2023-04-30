@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Avatar, Breadcrumbs, CardContent, Grid, ListSubheader, Pagination, Typography, Stack } from '@mui/material';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import PageContainer from '../../components/container/PageContainer';
-import BlankCard from '../../components/shared/BlankCard';
-import DashboardCard from '../../components/shared/DashboardCard';
+import PageContainer from '../../../components/container/PageContainer';
+import BlankCard from '../../../components/shared/BlankCard';
+import DashboardCard from '../../../components/shared/DashboardCard';
 
 const ArtistPage = () => {
     
