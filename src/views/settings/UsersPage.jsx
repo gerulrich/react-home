@@ -1,8 +1,7 @@
-import { Divider, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import PageContainer from "../../components/container/PageContainer";
 import DashboardCard from "../../components/shared/DashboardCard";
-
 
 export const UsersPage = () => {
     
@@ -12,8 +11,6 @@ export const UsersPage = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12} lg={12}>
                         <DashboardCard title="Usuarios">
-
-
                         </DashboardCard>
                     </Grid>
                 </Grid>

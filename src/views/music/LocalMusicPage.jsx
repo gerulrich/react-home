@@ -1,23 +1,21 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { CardContent, Chip, Fab, Grid, IconButton, InputAdornment, OutlinedInput, Pagination, SpeedDial, SpeedDialAction, SpeedDialIcon, Stack, Tooltip, Typography } from "@mui/material";
-import { IconGridDots, IconList, IconPlayerPlay, IconSearch } from "@tabler/icons";
-import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import { Grid, IconButton, InputAdornment, OutlinedInput, Pagination } from "@mui/material";
+import { IconGridDots, IconList, IconSearch } from "@tabler/icons-react";
 import PageContainer from "../../components/container/PageContainer";
-import BlankCard from "../../components/shared/BlankCard";
 import { addSongsToQueue } from "../../store/slices/player";
 import { usePagingSearch } from "../../hooks/usePagingSearch";
 import { useState } from "react";
 import { homeApi } from "../../api/homeApi";
+import { useNavigate } from "react-router-dom";
+import { AlbumsGrid } from "./AlbumsGrid";
+import AlbumListPage from "./AlbumListPage";
+
 
 export const LocalMusicPage = () => {
     
-    const navigate = useNavigate();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [gridMode, setGridMode] = useState(false);
     const {
         page,
@@ -40,25 +38,23 @@ export const LocalMusicPage = () => {
         setResult({albums: filtered, total: (total-1)});
     }
 
+    const onEditAlbum = async(album) => navigate(`/music/explore/album/edit/${album.uid}`);
+    const onDetailsAlbum = async(album) => navigate(`/music/explore/album/${album.uid}`);
+
     useEffect(() => {
         getMusicCollection(searchValue, page).then(result =>  {
             result.albums.forEach(album => {
                 let cover_url = album.cover_url;
-                let artist = album.artist;
                 let album_name = album.title;
                 album.tracks.forEach(track => {
-                    // TODO eliminar cuando estén todas las validaciones
                     track['cover_url'] = cover_url;
                     track['album_name'] = album_name;
-                    if (!('artist' in track)) {
-                        track['artist'] = artist;
-                    }
+                    if (!('artist' in track)) track['artist'] = artist;
                 });
             });
-            console.log(result);
             setResult(result);
         });
-    }, [page]);
+    }, [page, searchValue]);
 
 
     const getMusicCollection = async(filter = '', page = 1) => {
@@ -106,71 +102,25 @@ export const LocalMusicPage = () => {
                 </Grid>
             </Grid>
 
-            {/** Albums Grid **/}
             <Grid container spacing={3} mt={0.5}>
-                {result.albums.map((album, index) => (
-                <Grid item sm={12} md={4} lg={3} key={index}>
-                    <BlankCard>
-                        <Typography>
-                            <img src={album.cover_url} alt="img" width="100%" />
-                        </Typography>
-                        
-                        <SpeedDial
-                            ariaLabel="SpeedDial basic example"
-                            sx={{ '& .MuiFab-primary': { width: 40, height: 40 },bottom: '75px', left: '15px', position: 'absolute' }}
-                            icon={<SpeedDialIcon size="16"/>}
-                        >
-                            <SpeedDialAction
-                                icon={<PlaylistPlayIcon size="16" />}
-                                tooltipTitle="Agregar a la lista"
-                                onClick={() => onQueueSongs(album)}
-                            />
-                            
-                            <SpeedDialAction
-                                icon={<EditIcon size="16" />}
-                                tooltipTitle="Editar"
-                            />
-
-                            <SpeedDialAction
-                                icon={<DeleteIcon size="16" />}
-                                tooltipTitle="Eliminar"
-                                onClick={() => onDeleteAlbum(album)}
-                            />
-                            
-                        </SpeedDial>
-                        
-                        {
-                            album.format == 'FLAC' || album.format == 'MP3_320'
-                            ? (<Chip 
-                                icon={<MusicNoteIcon />} label={album.format.replace('_', ' ').toLowerCase()} size="small"
-                                sx={{ top: '10px', right: '10px', position: 'absolute' }}
-                                color="primary"
-                                />)
-                            :(<></>)
-                        }
-
-                        
-                        
-                        <Tooltip title="Reproducir">
-                            <Fab
-                                size="small"
-                                color="primary"
-                                sx={{ bottom: '75px', left: '70px', position: 'absolute' }}
-                                onClick={() => onPlaySongs(album)}
-                            >
-                                <IconPlayerPlay size="16" />
-                            </Fab>
-                        </Tooltip>
-
-                        <CardContent sx={{ p: 3, pt: 2 }}>
-                            <Stack direction="column" alignItems="flex-start" justifyContent="space-between" mt={1}>
-                                <Typography variant="span" sx={{ textDecoration: 'bold' }}>{album.artist}</Typography>
-                                <Typography variant="span" sx={{fontWeight: 'bold'}}>{album.title}</Typography>                                
-                            </Stack>
-                        </CardContent>
-                    </BlankCard>
-                </Grid>
-                ))}
+                {gridMode ? (
+                <AlbumsGrid 
+                    albums={result.albums}
+                    onPlaySongs={onPlaySongs}
+                    onQueueSongs={onQueueSongs}
+                    onDetailsAlbum={onDetailsAlbum}
+                    onEditAlbum={onEditAlbum}
+                    onDeleteAlbum={onDeleteAlbum}
+                />) : (
+                <AlbumListPage 
+                    albums={result.albums}
+                    onPlaySongs={onPlaySongs}
+                    onQueueSongs={onQueueSongs}
+                    onDetailsAlbum={onDetailsAlbum}
+                    onEditAlbum={onEditAlbum}
+                    onDeleteAlbum={onDeleteAlbum}
+                />)}
+                
             </Grid>
 
              {/** Pagination **/}

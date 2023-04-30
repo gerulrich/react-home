@@ -8,7 +8,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText} from '@mui/material';
-import { IconListCheck, IconMail, IconUser } from '@tabler/icons';
+import { IconListCheck, IconMail, IconUser } from '@tabler/icons-react';
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
 import { useAuthStore } from 'src/hooks';
 

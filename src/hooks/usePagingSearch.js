@@ -29,7 +29,6 @@ export const usePagingSearch = ( ) => {
         page,
         setPage,
         searchValue,
-        setSearchValue,
         result,
         setResult,
         searchText, 

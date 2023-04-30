@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, InputAdornment, OutlinedInput, Pagination, Typography, CardContent, Grid, Stack } from '@mui/material';
-import { IconSearch } from '@tabler/icons';
-import BlankCard from '../../components/shared/BlankCard';
-import PageContainer from '../../components/container/PageContainer';
-import DashboardCard from '../../components/shared/DashboardCard';
-import { usePagingSearch } from '../../hooks/usePagingSearch';
+import { Button, InputAdornment, OutlinedInput, Pagination, Typography, CardContent, Grid, Stack, useTheme } from '@mui/material';
+import { IconSearch } from '@tabler/icons-react';
+import BlankCard from '../../../components/shared/BlankCard';
+import PageContainer from '../../../components/container/PageContainer';
+import DashboardCard from '../../../components/shared/DashboardCard';
+import { usePagingSearch } from '../../../hooks/usePagingSearch';
 
 
-const SearchPage = () => {
+const DeezerSearchPage = () => {
   
+    const theme = useTheme();
+
     const {
         page,
         searchValue,
@@ -112,13 +114,14 @@ const SearchPage = () => {
                                 <CardContent sx={{ p: 3, pt: 2 }}>
                                     <Stack direction="column" alignItems="flex-start" justifyContent="space-between" mt={1}>
                                         <Typography 
-                                            variant="span"
-                                            sx={{ textDecoration: 'bold' }}
+                                            sx={{ display: 'inline', color: theme.palette.text.primary, fontWeight: 'bold', textDecoration: 'none' }}
+                                            variant="body1"
                                             component={Link} to={`/music/search/artist/${album.artist.id}/album/${album.id}`}
                                         >{album.title}</Typography>
                                         <Typography 
-                                            variant="span"
                                             component={Link} to={`/music/search/artist/${album.artist.id}`}
+                                            sx={{ display: 'inline', color: theme.palette.text.primary, textDecoration: 'none' }}
+                                            variant="body1"
                                         >de {album.artist.name}</Typography>
                                     </Stack>
                                 </CardContent>
@@ -138,4 +141,4 @@ const SearchPage = () => {
 
 };
 
-export default SearchPage;
+export default DeezerSearchPage;

@@ -1,26 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Button, Checkbox, Chip, CircularProgress, Grid, ListItemIcon, ListItemText, Menu, MenuItem, Typography } from '@mui/material';
+import { Button, Checkbox, Chip, CircularProgress, FormControlLabel, FormGroup, Grid, ListItemIcon, ListItemText, Menu, MenuItem, Typography } from '@mui/material';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import DashboardCard from '../../../components/shared/DashboardCard';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import TerminalIcon from '@mui/icons-material/Terminal';
-import { IconBadgeHd, IconBadgeSd } from '@tabler/icons';
+import { IconBadgeHd, IconBadgeSd } from '@tabler/icons-react';
+import { homeApi } from '../../../api/homeApi';
 
 export const AlbumDownloadCard = ({album, onStartDownload, onShowConsole}) => {
   
     const { isDownloading } = useSelector( state => state.music );
+    const [localAlbum, setLocalAlbum] = useState({format: ''});
+    const [bookmark, setBookmark] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
+    useEffect(() => {
+        console.log(album);
+        album.id && homeApi.get(`/music/albums/DEEZER/${album.id}`)
+            .then(resp => {
+                setLocalAlbum(resp.data);
+                console.log(resp);
+                }
+                )
+            .catch(error => console.info(`Àlbum ${album.id} not found`));
+    }, [album, isDownloading])
+    
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
-      };
-      const handleClose = () => {
+    };
+    const handleClose = () => {
         setAnchorEl(null);
-      };
+    };
 
     const handleDownloadFlac = () => {
         onStartDownload('flac');
@@ -32,23 +46,39 @@ export const AlbumDownloadCard = ({album, onStartDownload, onShowConsole}) => {
         handleClose();
     }
 
+    const onAddToWishList = () => {
+        console.log("Click en checkbox")
+        setBookmark(!bookmark);
+    }
+
    return (
-    <DashboardCard title={album.artist.name}>
+    <DashboardCard title={album.artist}>
         {/* Caratula y opciones de descarga*/}
         <Grid container>
-            <Grid item xs={12} md={4} lg={3}><img src={album.cover_medium}/></Grid>
+            <Grid item xs={12} md={4} lg={3}><img src={album.cover_url}/></Grid>
             <Grid item xs={12} md={6} lg={6}>
                 <Typography variant='h3'>{album.title}</Typography>
                 <Grid item xs={12} mt={2}>
-                    <Checkbox size="large"
-                        icon={<BookmarkIcon />}
-                        checkedIcon={<BookmarkBorderIcon />}
+                    
+                <FormGroup>
+                    <FormControlLabel control={ <Checkbox size="large"
+                        icon={<BookmarkBorderIcon />}
+                        checkedIcon={<BookmarkIcon />}
+                        checked={bookmark}
+                        onChange={onAddToWishList}
+                        />} label="Añadir a la lista de descargas"
                         />
+                </FormGroup>
+                
                 </Grid>
                 
-                <Grid item xs={12} mt={2}>
-                    <Chip icon={<MusicNoteIcon />} label="mp3 320kbps" size="small" variant="outlined" />
+                { localAlbum.format !== ''
+                ?
+                (<Grid item xs={12} mt={2}>
+                    <Chip icon={<MusicNoteIcon />} label={localAlbum.format} size="small" variant="outlined" />
                 </Grid>
+                ):(<></>)
+                }
 
                 <Grid item xs={12} mt={2} alignContent="center">
                     {
