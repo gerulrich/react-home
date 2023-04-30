@@ -8,10 +8,10 @@ export const ShakaPlayerComponent = ({media}) => {
     const [show, setShow] = useState(false);
     const ref = useRef(null);
     const config = {
-        controlPanelElements: ['play_pause', 'time_and_duration', 'Statistics', 'spacer', 'mute', 'volume', 'airplay', 'fullscreen', 'overflow_menu'],
+        controlPanelElements: ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'airplay', 'fullscreen', 'overflow_menu'],
         addSeekBar: true,
         customContextMenu : true,
-        contextMenuElements : ['statistics', 'cast'],
+        contextMenuElements : ['statistics'],
         statisticsList : ['width', 'height', 'playTime', 'bufferingTime'],
         addBigPlayButton: false,
         castReceiverAppId: '1BA79154',

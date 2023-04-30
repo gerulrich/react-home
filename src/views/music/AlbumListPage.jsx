@@ -121,10 +121,11 @@ const AlbumListPage = ({albums=[], onPlaySongs, onQueueSongs, onDetailsAlbum, on
                 <Divider component="li" />
             
                 {expandedAlbumId === album.uid && (
-                    <List component="div" >
+                  
+                    <List component="div">
                     { album.tracks.map((track) => (
-                        <>
-                            <ListItem key={track.uid} dense sx={{ l: 10 }}>
+                        <Fragment key={track.uid}>
+                            <ListItem dense sx={{ l: 10 }}>
                                 <ListItemAvatar style={{marginLeft: '20px'}}>
                                     <IconButton onClick={() => onPlaySong(track)}>
                                         <PlayArrowIcon fontSize='small'/>
@@ -150,9 +151,11 @@ const AlbumListPage = ({albums=[], onPlaySongs, onQueueSongs, onDetailsAlbum, on
                                 </ListItemSecondaryAction>
                             </ListItem>
                             <Divider sx={{borderStyle:'dashed', marginInlineStart: '40px'}}/>
-                        </>
+                            
+                        </Fragment>
                     ))}
                     </List>
+                    
                 )}
             </Fragment>
         ))}
