@@ -2,7 +2,6 @@ import React, { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 
-
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')));
@@ -24,6 +23,7 @@ const LiveTvPage = Loadable(lazy(() => import('../views/tv/LiveTvPage')));
 
 // Settings
 const ChannelsPage = Loadable(lazy(() => import('../views/settings/ChannelsPage')));
+const EditChannelPage = Loadable(lazy(() => import('../views/settings/EditChannelPage')));
 const MusicTagsPage = Loadable(lazy(() => import('../views/settings/MusicTagsPage')));
 const UsersPage = Loadable(lazy(() => import('../views/settings/UsersPage')));
 
@@ -47,6 +47,7 @@ export const Router = [
       { path: '/music/explore/album/:albumId', exact: true, element: <LocalAlbumPage /> },
       // Settings
       { path: '/settings/channels', exact: true, element: <ChannelsPage /> },
+      { path: '/settings/channels/:channelId', exact: true, element: <EditChannelPage /> },
       { path: '/settings/tags/', exact: true, element: <MusicTagsPage /> },
       { path: '/settings/users/', exact: true, element: <UsersPage /> },
       // Others
