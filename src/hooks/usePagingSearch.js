@@ -9,7 +9,7 @@ export const usePagingSearch = ( ) => {
     const [params] = useSearchParams();
     const [page, setPage] = useState(parseInt(params.get('page')) || 1);
     const [searchValue, setSearchValue] = useState(params.get('q') || '');
-    const [result, setResult] = useState({albums: [], pages: 0, current: 0 });
+    const [result, setResult] = useState({albums: [], channels: [], pages: 0, current: 0 });
     const {searchText, onInputChange} = useForm({ searchText: searchValue });
 
     const onPageChange = (event, value) => {
@@ -23,7 +23,6 @@ export const usePagingSearch = ( ) => {
         setSearchValue(searchText);
         setPage(1);
     };
-
 
     return {
         page,
