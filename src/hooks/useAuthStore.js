@@ -15,8 +15,7 @@ export const useAuthStore = () => {
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('token', data.token );
             localStorage.setItem('token-init-date', new Date().getTime() );
-            // TODO pasar todos los datos del usaurio (roles)
-            dispatch( onLogin({ name: data.name, uid: data.uid }) );
+            dispatch( onLogin({...data.user}));
         } catch (error) {
             dispatch( onLogout('Credenciales incorrectas') );
             setTimeout(() => {
@@ -27,13 +26,14 @@ export const useAuthStore = () => {
 
     const checkAuthToken = async() => {
         const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
         if ( !token ) return dispatch( onLogout() );
 
         try {
             const { data } = await homeApi.get('/auth/renew');
             localStorage.setItem('token', data.token );
             localStorage.setItem('token-init-date', new Date().getTime() );
-            dispatch( onLogin({ name: data.name, uid: data.uid }) );
+            dispatch( onLogin(user) );
         } catch (error) {
             localStorage.clear();
             dispatch( onLogout() );

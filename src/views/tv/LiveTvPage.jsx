@@ -5,11 +5,13 @@ import { ChannelList } from '../../components/player/ChannelList';
 import { ShakaPlayerComponent } from '../../components/player/ShakaPlayerComponent';
 import { useEffect } from 'react';
 import { homeApi } from '../../api/homeApi';
+import { useSelector } from 'react-redux';
 
 
 const LiveTvPage = () => {
     
     const [state, setState] = useState({channels: [], selected: {}});
+    const {showAll} = useSelector(state => state.ui);
 
     const onSelectChannel = (channel) => {
         setState({
@@ -25,7 +27,7 @@ const LiveTvPage = () => {
                 channels: resp.channels,
             })
         })
-    }, [])
+    }, [showAll])
 
     const getChannels = async () => {
         const { data } = await homeApi.get('/tv/channels');
