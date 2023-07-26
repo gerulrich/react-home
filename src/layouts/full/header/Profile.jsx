@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -7,13 +7,23 @@ import {
   IconButton,
   MenuItem,
   ListItemIcon,
-  ListItemText} from '@mui/material';
+  ListItemText,
+  FormControlLabel,
+  Checkbox} from '@mui/material';
 import { IconListCheck, IconMail, IconUser } from '@tabler/icons-react';
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
 import { useAuthStore } from 'src/hooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { setShowAll } from '../../../store/slices/ui/uiSlice';
 
 const Profile = () => {
   const {startLogout} = useAuthStore();
+  
+  const {showAll} = useSelector(state => state.ui);
+  const {user} = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+  const onChangeShowAll = (_, value) => dispatch(setShowAll({showAll: value}))
+  const isAdmin = user.roles.includes('ADMIN_ROLE');
 
   const [anchorEl2, setAnchorEl2] = useState(null);
   const handleClick2 = (event) => {
@@ -22,6 +32,14 @@ const Profile = () => {
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
+
+  useEffect(() => {
+      if (showAll) {
+        localStorage.setItem('hiddenContent', 'true')
+      } else {
+        localStorage.removeItem('hiddenContent')
+      }
+  }, [showAll])
 
   return (
     <Box>
@@ -82,6 +100,20 @@ const Profile = () => {
           </ListItemIcon>
           <ListItemText>My Tasks</ListItemText>
         </MenuItem>
+
+        {
+          isAdmin
+            ? (<MenuItem>
+              <ListItemIcon>
+                <FormControlLabel
+                  control={<Checkbox checked={showAll} onChange={onChangeShowAll} />}
+                  label="Mostrar todo"
+                />
+              </ListItemIcon>
+            </MenuItem>)
+            : (<></>)
+        }
+
         <Box mt={1} py={1} px={2}>
           <Button 
             variant="outlined"
