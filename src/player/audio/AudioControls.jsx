@@ -6,7 +6,7 @@ import FastRewindIcon from '@mui/icons-material/FastRewind';
 import FastForwardIcon from '@mui/icons-material/FastForward';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
-import { setCurrentSong, setPlayPause } from "../../store/slices/player";
+import { setNextSong, setPlayPause, setPrevSong } from "../../store/slices/player";
 
 
 const TinyText = styled(Typography)({
@@ -25,7 +25,7 @@ const formatDuration = (value) => {
 export const AudioControls = ({audioPlayer}) => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const {isPlaying, duration, position, songs, currentSong} = useSelector(status => status.player);
+    const {isPlaying, duration, position, songs, currentSongIndex} = useSelector(status => status.player);
 
     useEffect(() => {
         navigator.mediaSession.setActionHandler("play", () => onPlayPause());
@@ -34,26 +34,14 @@ export const AudioControls = ({audioPlayer}) => {
         navigator.mediaSession.setActionHandler("seekforward", () => forwardThirty());
         navigator.mediaSession.setActionHandler("previoustrack", () => onPrevTrack());
         navigator.mediaSession.setActionHandler("nexttrack", () => onNextTrack());
-    }, [currentSong]);
+    }, [currentSongIndex]);
     
     const onPlayPause = () => dispatch(setPlayPause({play: !isPlaying}));
     const backThirty = () => audioPlayer.current.currentTime = (position < 30) ? 0 : (position -30);
     const forwardThirty = () => audioPlayer.current.currentTime = (position + 30 > duration) ? (duration -1) : (position + 30);
     const onChangePosition = (_, value) => audioPlayer.current.currentTime = value;
-
-    const onPrevTrack = () => {
-        const prevSong = currentSong -1;
-        if (prevSong >= 0) {
-            dispatch(setCurrentSong({currentSong: prevSong}));
-        }
-    }
-
-    const onNextTrack = () => {
-        const nextSong = currentSong + 1;
-        if (nextSong < songs.length) {
-            dispatch(setCurrentSong({currentSong: nextSong}));
-        }
-    }
+    const onPrevTrack = () => dispatch(setPrevSong());
+    const onNextTrack = () => dispatch(setNextSong());
 
     return (
         <Grid container
@@ -64,7 +52,7 @@ export const AudioControls = ({audioPlayer}) => {
             alignItems="center">
         
             <Grid item>
-                <IconButton  sx={{border: '1px solid'}} size='small' disabled={!isPlaying || currentSong < 1} onClick={onPrevTrack}>
+                <IconButton  sx={{border: '1px solid'}} size='small' disabled={!isPlaying || currentSongIndex < 1} onClick={onPrevTrack}>
                     <SkipPreviousIcon />
                 </IconButton>
             </Grid>
@@ -89,7 +77,7 @@ export const AudioControls = ({audioPlayer}) => {
 
 
             <Grid item>
-                <IconButton  sx={{border: '1px solid'}} size='small' disabled={!isPlaying || currentSong == songs.length-1} onClick={onNextTrack}>
+                <IconButton  sx={{border: '1px solid'}} size='small' disabled={!isPlaying || currentSongIndex == songs.length-1} onClick={onNextTrack}>
                     <SkipNextIcon />
                 </IconButton>
             </Grid>
