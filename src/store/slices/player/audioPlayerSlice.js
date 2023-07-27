@@ -4,7 +4,8 @@ export const audioPlayerSlice = createSlice({
     name: 'audioPlayer',
     initialState: {
         songs: [],
-        currentSong: -1,
+        currentSongIndex: -1,
+        currentSong: {},
         isPlaying: false,
         paused: false,
         duration: 0,
@@ -25,7 +26,8 @@ export const audioPlayerSlice = createSlice({
         addSongsToQueue: (state, {payload}) => {
             if (!!payload.replace) {
                 state.songs = [...payload.songs];
-                state.currentSong = 0;
+                state.currentSongIndex = 0;
+                state.currentSong = state.songs[0];
                 state.position = 0;
             } else {
                 state.songs = [...state.songs, ...payload.songs];
@@ -35,10 +37,35 @@ export const audioPlayerSlice = createSlice({
             }
         },
         setCurrentSong: (state, {payload}) => {
-            state.currentSong = payload.currentSong;
+            console.log(payload);
+            const index = state.songs.findIndex((e) => e.title === payload.song.title && e.album === payload.song.album && e.artist === payload.song.artist);
+            console.log(index);
+            if (index > 0) {
+                state.currentSong = payload.song;
+                state.currentSongIndex = index;
+            }
+        },
+        setNextSong: (state, {payload}) => {
+            const nextSong = state.currentSongIndex + 1;
+            if (nextSong < state.songs.length) {
+                state.currentSongIndex = nextSong;
+                state.currentSong = state.songs[nextSong];
+            } else {
+                state.isPlaying = false;
+                state.position = 0;
+                state.currentSongIndex = -1;
+                state.currentSong = state.songs[0];
+            }
+        },
+        setPrevSong: (state, {payload}) => {
+            const prevSong = state.currentSongIndex - 1;
+            if (prevSong >= 0) {
+                state.currentSongIndex = prevSong;
+                state.currentSong = state.songs[prevSong];
+            }
         }
     }
 });
 
 // Action creators are generated for each case reducer function
-export const { setPlayPause, setPosition, setDuration, addSongsToQueue, setCurrentSong } = audioPlayerSlice.actions;
+export const { setPlayPause, setPosition, setDuration, addSongsToQueue, setCurrentSong, setNextSong, setPrevSong } = audioPlayerSlice.actions;
