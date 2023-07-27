@@ -6,7 +6,7 @@ import ClearAllIcon from '@mui/icons-material/ClearAll';
 import { addSongsToQueue, setCurrentSong } from "../../store/slices/player";
 
 
-export const PlayerQueue = ({songs, currentSong}) => {
+export const PlayerQueue = ({songs, currentSong, currentSongIndex}) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = useState(null);
@@ -16,7 +16,7 @@ export const PlayerQueue = ({songs, currentSong}) => {
     const onMenuClose = () => setAnchorEl(null);
     
     const onSelectSong = (index) => {
-        dispatch(setCurrentSong({currentSong: index}));
+        dispatch(setCurrentSong({song: songs[index]}));
         setAnchorEl(null);
     };
 
@@ -67,7 +67,7 @@ export const PlayerQueue = ({songs, currentSong}) => {
             >
                 {
                     songs.map((song, index) => {
-                        if (index === currentSong) {
+                        if (index === currentSongIndex) {
                             return (<MenuItem 
                                         key={index}
                                         sx={{fontWeight: 'bold'}}

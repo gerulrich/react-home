@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { setDuration, setPosition, setCurrentSong, setPlayPause } from "../../store/slices/player";
+import { setDuration, setPosition, setNextSong } from "../../store/slices/player";
 import { AudioControls } from "./AudioControls";
 import { PlayerQueue } from "./PlayerQueue";
 import { SongInfo } from "./SongInfo";
@@ -10,54 +10,47 @@ export const AudioPlayer = () => {
     
     const dispatch = useDispatch();
     const audioPlayer = useRef();
-    const {isPlaying, songs, currentSong} = useSelector(status => status.player);
+    const {isPlaying, songs, currentSong, currentSongIndex} = useSelector(status => status.player);
 
     useEffect(() => {
         isPlaying ? audioPlayer.current.play() : audioPlayer.current.pause();
     }, [isPlaying, audioPlayer?.current?.readyState]);
 
-    useEffect(() => {
-        if (currentSong >= 0 && currentSong < songs.length && isPlaying) {
-            if (audioPlayer.current.src !== songs[currentSong].media_url) {
-                audioPlayer.current.src = songs[currentSong].media_url;
-                isPlaying ? audioPlayer.current.play() : audioPlayer.current.pause();
-            }
-            
-            if ("mediaSession" in navigator) {
-                if (currentSong >= 0 && isPlaying) {
-                    const song = songs[currentSong];
-                    const metadata = {
-                        title: song.title,
-                        artist: song.artist,
-                        album: song.album,
-                        artwork: [{
-                            src: song.cover_url
-                        }]
-                    }
-                    navigator.mediaSession.metadata = new MediaMetadata(metadata);
+    const setMediaMetadata = (currentSong) => {
+        if ("mediaSession" in navigator) {
+            if (!!currentSong.media_url) {
+                const metadata = {
+                    title: currentSong.title,
+                    artist: currentSong.artist,
+                    album: currentSong.album,
+                    artwork: [{
+                        src: currentSong.cover_url
+                    }]
                 }
+                navigator.mediaSession.metadata = new MediaMetadata(metadata);
             }
-        } else {
-            audioPlayer.current.pause();
-        }
-    }, [currentSong, songs]);
-
-    const onLoadedData = (event) => dispatch(setDuration({duration: event.target.duration}));
-    const onTimeUpdate = (event) => dispatch(setPosition({position: event.target.currentTime}));
-
-    const onEnded = () => {
-        if (currentSong == (songs.length -1)) {
-            dispatch(setPosition(0));
-            dispatch(setPlayPause({play: false}));
-            dispatch(setPosition({position: 0}));
-            dispatch(setCurrentSong({currentSong: 0}));
-        } else {
-            const nextSong = currentSong + 1;
-            dispatch(setCurrentSong({currentSong: nextSong}));                
         }
     }
 
+    useEffect(() => {
+        if (isPlaying && (!!currentSong.media_url)) {
+            if (audioPlayer.current.src !== currentSong.media_url) {
+                audioPlayer.current.src = currentSong.media_url;
+            }
+            audioPlayer.current.play();
+        } else {
+            audioPlayer.current.pause();
+            if (audioPlayer.current.src !== currentSong.media_url) {
+                audioPlayer.current.src = currentSong.media_url;
+                
+            }
+        }
+        setMediaMetadata(currentSong);
+    }, [currentSong]);
 
+    const onLoadedData = (event) => dispatch(setDuration({duration: event.target.duration}));
+    const onTimeUpdate = (event) => dispatch(setPosition({position: event.target.currentTime}));
+    const onEnded = () => dispatch(setNextSong());
   
     return (
         <>
@@ -78,13 +71,13 @@ export const AudioPlayer = () => {
                 sx={{display: {xs: 'none', md: 'flex'}}}
             >
                 <Grid item xs={3}>
-                    <SongInfo songs={songs} currentSong={currentSong} isPlaying={isPlaying}/>                        
+                    <SongInfo songs={songs} currentSong={currentSong} currentSongIndex={currentSongIndex} isPlaying={isPlaying}/>                        
                 </Grid>
                 <Grid item xs={7}>
                     <AudioControls audioPlayer={audioPlayer} />
                 </Grid>
                 <Grid item xs={2} >
-                   <PlayerQueue songs={songs} currentSong={currentSong} isPlaying={isPlaying}/>
+                   <PlayerQueue songs={songs} currentSong={currentSong} currentSongIndex={currentSongIndex} isPlaying={isPlaying}/>
                 </Grid>
 
             </Grid>
@@ -101,7 +94,7 @@ export const AudioPlayer = () => {
                     <AudioControls audioPlayer={audioPlayer} />
                 </Grid>
                 <Grid item xs={2} >
-                   <PlayerQueue songs={songs} currentSong={currentSong} isPlaying={isPlaying}/>
+                   <PlayerQueue songs={songs} currentSong={currentSong} currentSongIndex={currentSongIndex} isPlaying={isPlaying}/>
                 </Grid>
             </Grid>
         </>
