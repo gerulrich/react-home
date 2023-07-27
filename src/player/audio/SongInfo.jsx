@@ -4,7 +4,7 @@ import VinylImg from '../../assets/images/Vinyl_record.svg';
 
 export const SongInfo = ({songs, currentSong, currentSongIndex, isPlaying}) => {
   
-    const cover = 'cover_url' in currentSong ? currentSong.cover_url : VinylImg;
+    const cover = currentSong && 'cover_url' in currentSong ? currentSong.cover_url : VinylImg;
     return (
         <Grid container
             width="100%"

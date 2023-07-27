@@ -26,9 +26,14 @@ export const audioPlayerSlice = createSlice({
         addSongsToQueue: (state, {payload}) => {
             if (!!payload.replace) {
                 state.songs = [...payload.songs];
-                state.currentSongIndex = 0;
-                state.currentSong = state.songs[0];
                 state.position = 0;
+                if (payload.songs.length > 0) {
+                    state.currentSongIndex = 0;
+                    state.currentSong = state.songs[0];
+                } else {
+                    state.currentSongIndex = -1;
+                    state.currentSong = {};
+                }
             } else {
                 state.songs = [...state.songs, ...payload.songs];
             }
