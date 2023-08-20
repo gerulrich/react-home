@@ -7,10 +7,12 @@ import { useEffect, useState } from "react";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PlayDisabledIcon from '@mui/icons-material/PlayDisabled';
+import { useNavigate } from "react-router";
 
 
 export const MusicTagsPage = () => {
     
+    const navigate = useNavigate();
     const [data, setData] = useState({ tags: [], total: 0 });
     useEffect(() => {
         homeApi.get('/tags?limit=10')
@@ -23,6 +25,7 @@ export const MusicTagsPage = () => {
           });
       }, []);
 
+      const onEdit = (tag) => navigate(`/settings/tags/${tag.uid}`);
 
     return (
         <PageContainer title="Music Tags">
@@ -57,10 +60,10 @@ export const MusicTagsPage = () => {
                                             
                                             <TableCell>{row.album.artist}</TableCell>
                                             <TableCell>
-                                                <IconButton aria-label="delete">
-                                                    <EditIcon />
+                                                <IconButton aria-label="edit" onClick={()=> onEdit(row)}>
+                                                    <EditIcon size="16" />
                                                 </IconButton>
-                                                <IconButton aria-label="delete">
+                                                <IconButton aria-label="disable">
                                                     <PlayDisabledIcon />
                                                 </IconButton>                                                
                                                 <IconButton aria-label="delete">

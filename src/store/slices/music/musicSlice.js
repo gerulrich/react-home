@@ -3,15 +3,19 @@ import { createSlice } from '@reduxjs/toolkit';
 export const musicSlice = createSlice({
     name: 'music',
     initialState: {
-        output: [],
+        output: '',
         album: null,
         isDownloading: false,
         tag: ''
     },
     reducers: {
         appendDownloadLog: (state, {payload} ) => {
-            state.output = [...state.output, `\n${payload.date} - ${payload.level} - ${payload.message}\n`];
-            if (payload.message === 'Done') {
+            if (state.output == '') {
+                state.output = payload.message;    
+            } else {
+                state.output = state.output + '\n' + payload.message;
+            }
+            if (payload.message && payload.message.endsWith('Finalizado')) {
                 state.isDownloading = false;
                 state.album = null;
             }
@@ -20,7 +24,7 @@ export const musicSlice = createSlice({
             state.isDownloading = true;
             state.album = payload.album;
             state.format = payload.format;
-            state.output = [`$ download_deezer.sh --format ${ payload.format } https://deezer.com/album/${ payload.album }`];
+            state.output = '';
         },
         updateTag: (state, {payload} ) => {
             state.tag = payload.code;

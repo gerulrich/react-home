@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { io } from "socket.io-client";
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import AuthRouter from './routes/AuthRouter';
-import { appendDownloadLog } from './store/slices';
+import { appendDownloadLog, clearTag, updateTag } from './store/slices';
 import { baselightTheme, basedarkTheme } from "./theme";
 import { CheckinAuth } from './components/ui';
 import Router from './routes/Router';
@@ -26,8 +26,14 @@ function App() {
     if (status == 'authenticated') {
       const token = localStorage.getItem('token');
       const socket = io(import.meta.env.VITE_BACKEND_URL, { extraHeaders: { "x-token": token }} );
-      socket.on('tag', ( payload ) =>  console.log('Code:', payload ));
-      socket.on('download-progress', ( payload ) => dispatch(appendDownloadLog(payload)));
+      socket.on('tag', ( payload ) => {
+        dispatch(updateTag(payload))
+        setTimeout(() => dispatch(clearTag()), 3000);
+      });
+      socket.on('download-progress', ( payload ) => {
+        console.log(payload);
+        dispatch(appendDownloadLog(payload));        
+      });
     }
   }, [status]);
 

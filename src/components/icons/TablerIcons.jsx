@@ -1,6 +1,7 @@
 import { Typography } from "@mui/material"
 import  {
     IconBrandDeezer,
+    IconBrandTidal,
     IconDeviceTv,
     IconDeviceTvOld,
     IconError404,
@@ -17,6 +18,7 @@ export const TablerIcons = (props) => {
 
     const icons = {
       'IconBrandDeezer': IconBrandDeezer,
+      'IconBrandTidal': IconBrandTidal,
       'IconDeviceTv': IconDeviceTv,
       'IconDeviceTvOld': IconDeviceTvOld,
       'IconFileMusic': IconFileMusic,

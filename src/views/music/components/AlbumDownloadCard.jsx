@@ -10,7 +10,7 @@ import TerminalIcon from '@mui/icons-material/Terminal';
 import { IconBadgeHd, IconBadgeSd } from '@tabler/icons-react';
 import { homeApi } from '../../../api/homeApi';
 
-export const AlbumDownloadCard = ({album, onStartDownload, onShowConsole}) => {
+export const AlbumDownloadCard = ({album, onStartDownload}) => {
   
     const { isDownloading } = useSelector( state => state.music );
     const [localAlbum, setLocalAlbum] = useState({format: ''});
@@ -94,14 +94,6 @@ export const AlbumDownloadCard = ({album, onStartDownload, onShowConsole}) => {
                                     <Grid item>
                                         <CircularProgress color="primary" />
                                     </Grid>                                
-                                    <Grid item>
-                                        <Button 
-                                            variant="outlined"
-                                            startIcon={<TerminalIcon />}
-                                            onClick={() => onShowConsole(true)}
-                                        >Mostrar Terminal
-                                        </Button>
-                                    </Grid>
                                 </Grid>
                            </>)
                         : (<Button

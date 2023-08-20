@@ -31,6 +31,9 @@ export const audioPlayerSlice = createSlice({
                     state.currentSongIndex = 0;
                     state.currentSong = state.songs[0];
                 } else {
+                    state.isPlaying = false;
+                    state.paused = true;
+                    state.duration = 0;
                     state.currentSongIndex = -1;
                     state.currentSong = {};
                 }
@@ -42,9 +45,7 @@ export const audioPlayerSlice = createSlice({
             }
         },
         setCurrentSong: (state, {payload}) => {
-            console.log(payload);
-            const index = state.songs.findIndex((e) => e.title === payload.song.title && e.album === payload.song.album && e.artist === payload.song.artist);
-            console.log(index);
+            const index = state.songs.findIndex((e) => e.uid === payload.song.uid);
             if (index > 0) {
                 state.currentSong = payload.song;
                 state.currentSongIndex = index;
