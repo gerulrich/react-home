@@ -33,6 +33,12 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Tidal',
+    icon: 'IconBrandTidal',
+    href: '/tidal/search',
+  },  
+  {
+    id: uniqueId(),
     title: 'Mi colección',
     icon: 'IconFileMusic',
     href: '/music/explore',

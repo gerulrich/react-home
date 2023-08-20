@@ -5,18 +5,15 @@ import { Box, Grid } from '@mui/material';
 import { AlbumDownloadCard } from '../components/AlbumDownloadCard';
 import { AlbumTracksCard } from '../components/AlbumTracksCard';
 import { appendDownloadLog, startDownload } from '../../../store/slices';
-import { Terminal } from '../../../ui/components/Terminal';
 import { deezerApi } from '../../../api/deezerApi';
 import PageContainer from '../../../components/container/PageContainer';
 
 const AlbumPage = () => {
     
     const { albumId } = useParams();
-    const [showConsole, setShowConsole] = useState(false);
     const [album, setAlbum] = useState({ title: '', cover_url: '', tracks: [], artist: ''})
 
     const dispatch = useDispatch();
-    const { output } = useSelector( state => state.music );
 
     useEffect(() => {
         getAlbumById(albumId).then(album => setAlbum(album));
@@ -51,10 +48,7 @@ const AlbumPage = () => {
             <Box>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <AlbumDownloadCard album={album} onStartDownload={onStartDownload} onShowConsole={setShowConsole}/>
-                    </Grid>
-                    <Grid item xs={12} style={{display: showConsole ? 'block': 'none', m: 0, p:0}}>
-                        <Terminal title="Terminal" content={output} />
+                        <AlbumDownloadCard album={album} onStartDownload={onStartDownload}/>
                     </Grid>
                     {/**  Track list **/}
                     <Grid item xs={12}>
