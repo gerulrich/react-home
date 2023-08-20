@@ -9,6 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { PlaylistPlay } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import { toTime } from '../../helpers/time';
 
 const PlayButton = styled(IconButton)({
     position: 'absolute',
@@ -21,13 +22,6 @@ const AlbumListPage = ({albums=[], onPlaySongs, onQueueSongs, onDetailsAlbum, on
   const [menuTrack, setMenuTrack] = useState(null);
   const [expandedAlbumId, setExpandedAlbumId] = useState(null);
   const [hovered, setHovered] = useState(null);
-
-  const toTime = (seconds) => {
-    var date = new Date(null);
-    date.setSeconds(seconds);
-    return date.toISOString().substr(14, 5);
- }
-
 
   const handleExpand = (albumId) => {
     if (albumId === expandedAlbumId) {
