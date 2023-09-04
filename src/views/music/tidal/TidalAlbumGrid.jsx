@@ -5,8 +5,8 @@ import BlankCard from '../../../components/shared/BlankCard';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 
 export const TidalAlbumGrid = ({album}) => {
-
     const theme = useTheme();
+    const artists = album.artists.filter(artist => artist.type == 'MAIN').map(artist => artist.name).join(' & ');
   return (
     <Grid item sm={12} md={4} lg={3}>
         <BlankCard>
@@ -57,7 +57,7 @@ export const TidalAlbumGrid = ({album}) => {
                     component={Link} to={`/tidal/artist/${album.artists[0].id}`}
                     sx={{ display: 'inline', color: theme.palette.text.primary, textDecoration: 'none' }}
                     variant="body1"
-                >de {album.artists[0].name}</Typography>
+                >de {artists}</Typography>
             </Stack>
         </CardContent>
     </BlankCard>

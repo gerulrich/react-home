@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Avatar, Container, Divider, Grid, IconButton, InputAdornment, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, OutlinedInput, Pagination, Typography } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
 import PageContainer from "../../components/container/PageContainer";
@@ -8,6 +8,8 @@ import { Link, useNavigate } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTheme } from "@emotion/react";
+import FloatingButton from "../music/components/FloatingButton";
+import ConfirmationDialog from "../music/components/ConfirmationDialog";
 
 
 export const ChannelsPage = () => {
@@ -26,19 +28,42 @@ export const ChannelsPage = () => {
     } = usePagingSearch();
 
     useEffect(() => {
-        homeApi.get(`/tv/channels?q=${searchValue}&limit=25&offset=${(page -1)*25}`).then(result => setResult(result.data));
+        homeApi.get(`/tv/channels?q=${searchValue}&limit=30&offset=${(page -1)*25}`).then(result => {
+            setResult(result.data);
+            console.log(result.data);
+        });
     }, [page, searchValue]);
 
-    const onEdit = (channel) => navigate(`/settings/channels/${channel.uid}`);
-    const onDelete = async(channel) => {
-        await homeApi.delete(`/settings/channels/${channel.uid}`);
-        const {total, albums} = result;
-        var filtered = albums.filter(a => a.uid != album.uid); 
-        setResult({albums: filtered, total: (total-1)});
-    }
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [item, setItem] = useState(null);
+    const onEdit = (channel) => navigate(`/settings/channels/edit/${channel.uid}`);
+    
+    const onDelete = (channel) => {
+        setItem(channel);
+        setDialogOpen(true);
+    }    
+
+    const handleNewChannel = () => navigate("/settings/channels/new");
+    
+    const handleCloseDialog = () => {
+        setItem(null);
+        setDialogOpen(false);
+      }      
+    
+      const handleConfirmDelete = () => {
+        const uid = item.uid;
+        homeApi.delete(`/tv/channels/${uid}`)
+            .then(resp => {
+                const {paging, channels} = result;
+                var filtered = channels.filter(item => item.uid != uid); 
+                setResult({channels: filtered, paging});
+            })
+            .catch(error => console.error(error));
+        handleCloseDialog();
+      }
 
     return (
-        <PageContainer title="Mi Musica">
+        <PageContainer title="Canales de TV">
         <Grid container spacing={3} mt={0.5} justifyContent="space-between">
             <Grid item sm={6} md={6} lg={4}>
                 <form onSubmit={onSearchSubmit}>
@@ -118,6 +143,13 @@ export const ChannelsPage = () => {
             </Grid>
         </Grid>
 
+
+        <FloatingButton onClick={handleNewChannel} />
+            <ConfirmationDialog
+                open={dialogOpen}
+                onClose={handleCloseDialog}
+                onDelete={handleConfirmDelete}
+            />
     </PageContainer>
   )
 }

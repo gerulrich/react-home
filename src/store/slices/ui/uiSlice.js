@@ -5,6 +5,7 @@ export const uiSlice = createSlice({
     initialState: {
         darkMode: true,
         showAll: false,
+        online: false,
     },
     reducers: {
         setDarkMode: (state, {payload} ) => {
@@ -13,9 +14,12 @@ export const uiSlice = createSlice({
         setShowAll: (state, {payload} ) => {
             state.showAll = payload.showAll;
         },
+        setOnline: (state, {payload} ) => {
+            state.online = payload.online;
+        },
     }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { setDarkMode,  setShowAll} = uiSlice.actions;
+export const { setDarkMode,  setOnline, setShowAll} = uiSlice.actions;

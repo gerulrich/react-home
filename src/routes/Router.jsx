@@ -22,12 +22,15 @@ const LocalAlbumPage = Loadable(lazy(() => import('../views/music/LocalAlbumPage
 
 // TV 
 const LiveTvPage = Loadable(lazy(() => import('../views/tv/LiveTvPage')));
+const OnDemandPage = Loadable(lazy(() => import('../views/tv/OnDemandPage')));
 
 
 // Settings
 const ChannelsPage = Loadable(lazy(() => import('../views/settings/ChannelsPage')));
+const NewChannelPage = Loadable(lazy(() => import('../views/settings/NewChannelPage')));
 const EditChannelPage = Loadable(lazy(() => import('../views/settings/EditChannelPage')));
 const MusicTagsPage = Loadable(lazy(() => import('../views/settings/MusicTagsPage')));
+const NewMusicTagPage = Loadable(lazy(() => import('../views/settings/NewMusicTagPage')));
 const EditMusicTagPage = Loadable(lazy(() => import('../views/settings/EditMusicTagPage')));
 const UsersPage = Loadable(lazy(() => import('../views/settings/UsersPage')));
 
@@ -42,6 +45,7 @@ export const Router = [
       { path: '/dashboard', exact: true, element: <Dashboard /> },
       // TV 
       { path: '/live-tv', exact: true, element: <LiveTvPage /> },
+      { path: '/recordings', exact: true, element: <OnDemandPage /> },
       // Music
       { path: '/music/search', exact: true, element: <DeezerSearchPage /> },
       { path: '/music/search/artist/:artistId', exact: true, element: <DeezerArtistPage /> },
@@ -54,9 +58,11 @@ export const Router = [
       { path: '/music/explore/album/:albumId', exact: true, element: <LocalAlbumPage /> },
       // Settings
       { path: '/settings/channels', exact: true, element: <ChannelsPage /> },
-      { path: '/settings/channels/:channelId', exact: true, element: <EditChannelPage /> },
+      { path: '/settings/channels/edit/:channelId', exact: true, element: <EditChannelPage /> },
+      { path: '/settings/channels/new', exact: true, element: <NewChannelPage /> },
       { path: '/settings/tags/', exact: true, element: <MusicTagsPage /> },
-      { path: '/settings/tags/:tagId', exact: true, element: <EditMusicTagPage /> },
+      { path: '/settings/tags/edit/:tagId', exact: true, element: <EditMusicTagPage /> },
+      { path: '/settings/tags/new', exact: true, element: <NewMusicTagPage /> },
       { path: '/settings/users/', exact: true, element: <UsersPage /> },
       // Others
       { path: '/todos', exact: true, element: <TodosPage /> },

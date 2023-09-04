@@ -17,7 +17,15 @@ const TidalAlbumPage = () => {
     const navigate = useNavigate();
     const { albumId } = useParams();
     const dispatch = useDispatch();
-    const [album, setAlbum] = useState({ title: '', cover: '', tracks: [], artist: '', audioQuality: '', mediaMetadata: { tags: []}});
+    const [album, setAlbum] = useState({
+         title: '',
+         cover: '',
+         tracks: [],
+         artist: '',
+         artists: [],
+         audioQuality: '',
+         mediaMetadata: { tags: []}
+    });
     const [anchorEl, setAnchorEl] = useState(null);
     const { output, isDownloading } = useSelector( state => state.music );
 
@@ -31,6 +39,8 @@ const TidalAlbumPage = () => {
     }
 
     const duration = album.tracks.map(item => item.duration).reduce((acc, value) => acc + value, 0);
+
+    const artists = album.artists.filter(artist => artist.type == 'MAIN').map(artist => artist.name).join(' & ');
 
     const handleOnDownload = (quality) => {
         setAnchorEl(null);
@@ -56,7 +66,7 @@ const TidalAlbumPage = () => {
                                 underline="hover"
                                 color="inherit"
                                 href={`/tidal/artist/${album.artist.id}`}
-                            >{album.artist.name}</Link>
+                            >{artists}</Link>
                             <Typography color="text.primary">{album.title}</Typography>
                         </Breadcrumbs>
 
@@ -74,7 +84,7 @@ const TidalAlbumPage = () => {
 
                         <Grid item xs={12} md={8} lg={7} mt={5}>
                                 <Typography variant='h3'>{album.title == '' ? <Skeleton /> : album.title}</Typography>
-                                <Typography mt={2} variant='body1'>{album.artist.name}</Typography>
+                                <Typography mt={2} variant='body1'>{artists}</Typography>
                                 <Typography mt={2} variant='body2'>{album.tracks.length} canciones - {toTime(duration)}</Typography>
                         </Grid>
                     </Grid>
@@ -143,7 +153,7 @@ const TidalAlbumPage = () => {
                                 {
                                     album.mediaMetadata.tags.includes('HIRES_LOSSLESS') &&
                                     (
-                                        <MenuItem onClick={() => handleOnDownload('HIRES_LOSSLESS')}>
+                                        <MenuItem onClick={() => handleOnDownload('HI_RES_LOSSLESS')}>
                                             <ListItemText>Descargar en FLAC (HI RES)</ListItemText>
                                         </MenuItem>
                                     )
@@ -152,7 +162,7 @@ const TidalAlbumPage = () => {
                                 {
                                     album.mediaMetadata.tags.includes('MQA') &&
                                     (
-                                        <MenuItem onClick={() => handleOnDownload('MQA')}>
+                                        <MenuItem onClick={() => handleOnDownload('HI_RES')}>
                                             <ListItemText>Descargar en flac (MQA)</ListItemText>
                                         </MenuItem>                                        
                                     )
