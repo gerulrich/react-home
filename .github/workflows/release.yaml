@@ -94,12 +94,16 @@ jobs:
           echo "VITE_APP_VERSION=$APP_VERSION"  > .env.production
           echo "VITE_BACKEND_URL=$BACKEND_URL" >> .env.production
           echo "VITE_DEEZER_URL=$DEEZER_URL"  >> .env.production
+          echo "VITE_APP_URL=$APP_URL"  >> .env.production
+          echo "VITE_HASSIO_URL=$HASSIO_URL"  >> .env.production
           pwd
           cat .env.production
         env:
           APP_VERSION: ${{steps.release.outputs.version }}
           BACKEND_URL: ${{secrets.BACKEND_URL}}
           DEEZER_URL: ${{secrets.DEEZER_URL}}
+          APP_URL: ${{secrets.APP_URL}}
+          HASSIO_URL: ${{secrets.HASSIO_URL}}
       
       - name: Run install
         uses: borales/actions-yarn@v4

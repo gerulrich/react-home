@@ -9,7 +9,8 @@ import  {
     IconLayoutDashboard,
     IconLayoutKanban,
     IconTags,
-    IconUsers
+    IconUsers,
+    IconMovie
 } from  "@tabler/icons-react"
 
 
@@ -26,6 +27,7 @@ export const TablerIcons = (props) => {
       'IconLayoutKanban': IconLayoutKanban,
       'IconTags': IconTags,
       'IconUsers': IconUsers,
+      'IconMovie': IconMovie
     }
 
     const Icon = icons[icon] 

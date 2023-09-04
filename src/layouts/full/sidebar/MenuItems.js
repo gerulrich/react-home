@@ -22,12 +22,18 @@ const Menuitems = [
     href: '/live-tv',
   },
   {
+    id: uniqueId(),
+    title: 'Grabaciones',
+    icon: 'IconDeviceTvOld',
+    href: '/recordings',
+  },  
+  {
     navlabel: true,
     subheader: 'Musica',
   },  
   {
     id: uniqueId(),
-    title: 'Buscar',
+    title: 'Deezer',
     icon: 'IconBrandDeezer',
     href: '/music/search',
   },

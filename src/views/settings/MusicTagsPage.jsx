@@ -1,89 +1,148 @@
-import { Avatar, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { Box } from "@mui/system";
-import PageContainer from "../../components/container/PageContainer";
-import DashboardCard from "../../components/shared/DashboardCard";
+import { Avatar, Container, Divider, Grid, IconButton, InputAdornment, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, OutlinedInput, Pagination, Typography } from "@mui/material";
 import { homeApi } from "../../api/homeApi";
-import { useEffect, useState } from "react";
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Fragment, useEffect, useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
-import PlayDisabledIcon from '@mui/icons-material/PlayDisabled';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from "react-router";
-
+import FloatingButton from "../music/components/FloatingButton";
+import ConfirmationDialog from "../music/components/ConfirmationDialog";
+import { useTheme } from "@emotion/react";
+import PageContainer from "../../components/container/PageContainer";
+import { IconSearch } from "@tabler/icons-react";
+import { usePagingSearch } from "../../hooks/usePagingSearch";
 
 export const MusicTagsPage = () => {
-    
-    const navigate = useNavigate();
-    const [data, setData] = useState({ tags: [], total: 0 });
-    useEffect(() => {
-        homeApi.get('/tags?limit=10')
-          .then((res) => {
-            setData(res.data);
-            console.log("Result:", data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }, []);
 
-      const onEdit = (tag) => navigate(`/settings/tags/${tag.uid}`);
+    const navigate = useNavigate();
+    const theme = useTheme();
+    const [item, setItem] = useState(null);
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+    const {
+        page,
+        searchValue,
+        result,
+        setResult,
+        searchText,
+        onInputChange,
+        onPageChange,
+        onSearchSubmit
+    } = usePagingSearch({ tags: [], paging: { page: 0, total: 0 } });
+
+    useEffect(() => {
+        homeApi.get(`/tags?q=${searchValue}&offset=${(page - 1) * 25}&limit=25`)
+            .then((res) => setResult(res.data))
+            .catch(error => console.log(error));
+    }, [searchValue, page]);
+
+    const onEdit = (tag) => navigate(`/settings/tags/edit/${tag.uid}`);
+    const handleNewTag = () => navigate(`/settings/tags/new`);
+    const onDelete = (tag) => {
+        setItem(tag);
+        setDialogOpen(true);
+    }
+
+    const handleCloseDialog = () => {
+        setItem(null);
+        setDialogOpen(false);
+    }
+
+    const handleConfirmDelete = () => {
+        const uid = item.uid;
+        homeApi.delete(`/tags/${item.uid}`)
+            .then(resp => {
+                console.log(result);
+                const filtered = result.tags.filter(item => item.uid != uid);
+                setResult({
+                    tags: filtered,
+                    paging: result.paging,
+                });
+            })
+            .catch(error => console.log(error));
+        handleCloseDialog();
+    };
 
     return (
-        <PageContainer title="Music Tags">
-            <Box>
-                <Grid container spacing={3}>
-                    <Grid item xs={12} lg={12}>
-                        <DashboardCard title="Music Tags">
-
-
-                        <TableContainer component={Paper}>
-                            <Table aria-label="simple table" stickyHeader>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Tag ID</TableCell>
-                                        <TableCell>Album</TableCell>
-                                        <TableCell>Name</TableCell>
-                                        <TableCell>Artist</TableCell>
-                                        <TableCell>Acciones</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {data.tags.map((row) => (
-                                        <TableRow key={row.uid}>
-                                            <TableCell>{row.code}</TableCell>
-                                            <TableCell>
-                                                    <Avatar 
-                                                        variant="rounded"
-                                                        src={row.album.cover_url}
-                                                        sx={{ width: 56, height: 56 }}/>
-                                            </TableCell>
-                                            <TableCell>{row.album.title}</TableCell>
-                                            
-                                            <TableCell>{row.album.artist}</TableCell>
-                                            <TableCell>
-                                                <IconButton aria-label="edit" onClick={()=> onEdit(row)}>
-                                                    <EditIcon size="16" />
-                                                </IconButton>
-                                                <IconButton aria-label="disable">
-                                                    <PlayDisabledIcon />
-                                                </IconButton>                                                
-                                                <IconButton aria-label="delete">
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </TableCell>
-                                            
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-
-
-                        </DashboardCard>
+        <>
+            <PageContainer title="Music Tags">
+                <Grid container spacing={3} mt={0.5} justifyContent="space-between">
+                    <Grid item sm={6} md={6} lg={4}>
+                        <form onSubmit={onSearchSubmit}>
+                            <OutlinedInput
+                                size="small"
+                                placeholder='buscar...'
+                                variant="outlined"
+                                startAdornment={
+                                    <InputAdornment position="start"><IconSearch /></InputAdornment>
+                                }
+                                name="searchText"
+                                value={searchText}
+                                onChange={onInputChange}
+                                fullWidth />
+                        </form>
+                    </Grid>
+                    <Grid item sm={2} justifyItems="flex-end">
                     </Grid>
                 </Grid>
-            </Box>
-        </PageContainer>
-  )
+
+                <Grid container alignItems="flex-start" direction="row" justifyContent="center" m={1}>
+                    <Grid container alignItems="center" justifyContent="center" m={1}>
+                        <Pagination onChange={onPageChange} count={result.paging.total} disabled={result.paging.total <= 1} page={page} />
+                    </Grid>
+                </Grid>
+
+                <Grid container spacing={3} mt={0.5}>
+                    <Container>
+                        <Typography variant="h4" component="h1" gutterBottom>Music Tags</Typography>
+                        <List>
+                            {result.tags.map((tag, index) =>
+                            (
+                                <Fragment key={tag.uid}>
+                                    <ListItem>
+                                        <ListItemAvatar>
+                                            <Avatar src={tag.album.cover_url} variant="square" />
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                            primary={
+                                                <Typography
+                                                    sx={{ display: 'inline', color: theme.palette.text.primary, fontWeight: '', textDecoration: 'none' }}
+                                                    variant="body1"
+                                                >{tag.album.title}</Typography>
+                                            }
+                                            secondary={`RFID: ${tag.code}`} />
+
+                                        <ListItemSecondaryAction>
+                                            <IconButton onClick={() => onEdit(tag)}><EditIcon size="16" /></IconButton>
+                                            <IconButton onClick={() => onDelete(tag)}><DeleteIcon size="16" /></IconButton>
+                                        </ListItemSecondaryAction>
+
+                                    </ListItem>
+                                    <Divider component="li" />
+                                </Fragment>
+                            ))}
+                        </List>
+                    </Container>
+                </Grid>
+
+                <Grid container alignItems="flex-start" direction="row" justifyContent="center" m={1} style={{ display: (result.tags.length > 5) ? '' : 'none' }}>
+                    <Grid container alignItems="center" justifyContent="center" m={1}>
+                        <Pagination onChange={onPageChange} count={result.paging.total} disabled={result.paging.total <= 1} page={page} />
+                    </Grid>
+                </Grid>
+
+            </PageContainer>
+
+            <FloatingButton onClick={handleNewTag} />
+            <ConfirmationDialog
+                open={dialogOpen}
+                onClose={handleCloseDialog}
+                onDelete={handleConfirmDelete}
+            />
+
+        </>
+
+
+    )
 }
 
 export default MusicTagsPage;
