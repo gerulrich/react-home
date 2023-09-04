@@ -13,8 +13,10 @@ const AppBarStyled = styled(AppBar)(({ theme }) => ({
   justifyContent: 'center',
   backdropFilter: 'blur(4px)',
   [theme.breakpoints.up('lg')]: {
-    minHeight: '70px',
+    minHeight: '40px',
   },
+  borderBottom: '1px solid',
+  borderColor: theme.palette.divider,
 }));
 const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
   width: '100%',

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Avatar,
   Box,
   Menu,
   Button,
@@ -11,10 +10,10 @@ import {
   FormControlLabel,
   Checkbox} from '@mui/material';
 import { IconListCheck, IconMail, IconUser } from '@tabler/icons-react';
-import ProfileImg from 'src/assets/images/profile/user-1.jpg';
 import { useAuthStore } from 'src/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { setShowAll } from '../../../store/slices/ui/uiSlice';
+import { StatusAvatar } from './StatusAvatar';
 
 const Profile = () => {
   const {startLogout} = useAuthStore();
@@ -56,14 +55,7 @@ const Profile = () => {
         }}
         onClick={handleClick2}
       >
-        <Avatar
-          src="https://mui.com/static/images/avatar/2.jpg"
-          alt={ProfileImg}
-          sx={{
-            width: 35,
-            height: 35,
-          }}
-        />
+        <StatusAvatar src="https://mui.com/static/images/avatar/2.jpg"/>
       </IconButton>
       {/* ------------------------------------------- */}
       {/* Message Dropdown */}

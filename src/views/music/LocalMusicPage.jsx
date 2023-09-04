@@ -10,13 +10,16 @@ import { homeApi } from "../../api/homeApi";
 import { useNavigate } from "react-router-dom";
 import { AlbumsGrid } from "./AlbumsGrid";
 import AlbumListPage from "./AlbumListPage";
+import ConfirmationDialog from "./components/ConfirmationDialog";
 
 
 export const LocalMusicPage = () => {
-    
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [gridMode, setGridMode] = useState(false);
+    const [item, setItem] = useState(null);
+    const [dialogOpen, setDialogOpen] = useState(false);
     const {
         page,
         searchValue,
@@ -26,23 +29,39 @@ export const LocalMusicPage = () => {
         onInputChange,
         onPageChange,
         onSearchSubmit
-    } = usePagingSearch();
+    } = usePagingSearch({ albums: [], paging: { page: 1, total: 1 } });
 
-    const onQueueSongs = (album) => dispatch(addSongsToQueue({songs: album.tracks, replace: false, play: true}));
-    const onPlaySongs = (album) => dispatch(addSongsToQueue({songs: album.tracks, replace: true, play: true}));
-    
-    const onDeleteAlbum = async(album) => {
-        await homeApi.delete(`/music/albums/${album.uid}`);
-        const {total, albums} = result;
-        var filtered = albums.filter(a => a.uid != album.uid); 
-        setResult({albums: filtered, total: (total-1)});
+    const onQueueSongs = (album) => dispatch(addSongsToQueue({ songs: album.tracks, replace: false, play: true }));
+    const onPlaySongs = (album) => dispatch(addSongsToQueue({ songs: album.tracks, replace: true, play: true }));
+
+
+    const onDeleteAlbum = (album) => {
+        setItem(album);
+        setDialogOpen(true);
     }
 
-    const onEditAlbum = async(album) => navigate(`/music/explore/album/edit/${album.uid}`);
-    const onDetailsAlbum = async(album) => navigate(`/music/explore/album/${album.uid}`);
+    const handleCloseDialog = () => {
+        setItem(null);
+        setDialogOpen(false);
+    }
+
+    const handleConfirmDelete = () => {
+        const uid = item.uid;
+        homeApi.delete(`/music/albums/${uid}`)
+            .then(resp => {
+                const { paging, albums } = result;
+                var filtered = albums.filter(item => item.uid != uid);
+                setResult({ albums: filtered, paging });
+            })
+            .catch(error => console.error(error));
+        handleCloseDialog();
+    }
+
+    const onEditAlbum = async (album) => navigate(`/music/explore/album/edit/${album.uid}`);
+    const onDetailsAlbum = async (album) => navigate(`/music/explore/album/${album.uid}`);
 
     useEffect(() => {
-        getMusicCollection(searchValue, page).then(result =>  {
+        getMusicCollection(searchValue, page).then(result => {
             result.albums.forEach(album => {
                 let cover_url = album.cover_url;
                 let album_name = album.title;
@@ -57,13 +76,9 @@ export const LocalMusicPage = () => {
     }, [page, searchValue]);
 
 
-    const getMusicCollection = async(filter = '', page = 1) => {
-        const { data } = await homeApi.get(`/music/albums?q=${filter}&limit=25&offset=${(page -1)*25}`);
-        return {
-            albums: data.albums,
-            pages: Math.ceil(data.total/25),
-            current: page
-        }
+    const getMusicCollection = async (filter = '', page = 1) => {
+        const { data } = await homeApi.get(`/music/albums?q=${filter}&limit=25&offset=${(page - 1) * 25}`);
+        return data;
     }
 
     return (
@@ -98,40 +113,46 @@ export const LocalMusicPage = () => {
             {/** Pagination **/}
             <Grid container alignItems="flex-start" direction="row" justifyContent="center" m={1}>
                 <Grid container alignItems="center" justifyContent="center" m={1}>
-                    <Pagination onChange={onPageChange} count={result.pages} disabled={result.pages <= 1} page={page} />
+                    <Pagination onChange={onPageChange} count={result.paging.total} disabled={result.paging.total <= 1} page={page} />
                 </Grid>
             </Grid>
 
             <Grid container spacing={3} mt={0.5}>
                 {gridMode ? (
-                <AlbumsGrid 
-                    albums={result.albums}
-                    onPlaySongs={onPlaySongs}
-                    onQueueSongs={onQueueSongs}
-                    onDetailsAlbum={onDetailsAlbum}
-                    onEditAlbum={onEditAlbum}
-                    onDeleteAlbum={onDeleteAlbum}
-                />) : (
-                <AlbumListPage 
-                    albums={result.albums}
-                    onPlaySongs={onPlaySongs}
-                    onQueueSongs={onQueueSongs}
-                    onDetailsAlbum={onDetailsAlbum}
-                    onEditAlbum={onEditAlbum}
-                    onDeleteAlbum={onDeleteAlbum}
-                />)}
-                
+                    <AlbumsGrid
+                        albums={result.albums}
+                        onPlaySongs={onPlaySongs}
+                        onQueueSongs={onQueueSongs}
+                        onDetailsAlbum={onDetailsAlbum}
+                        onEditAlbum={onEditAlbum}
+                        onDeleteAlbum={onDeleteAlbum}
+                    />) : (
+                    <AlbumListPage
+                        albums={result.albums}
+                        onPlaySongs={onPlaySongs}
+                        onQueueSongs={onQueueSongs}
+                        onDetailsAlbum={onDetailsAlbum}
+                        onEditAlbum={onEditAlbum}
+                        onDeleteAlbum={onDeleteAlbum}
+                    />)}
+
             </Grid>
 
-             {/** Pagination **/}
-             <Grid container alignItems="flex-start" direction="row" justifyContent="center" m={1}>
+            {/** Pagination **/}
+            <Grid container alignItems="flex-start" direction="row" justifyContent="center" m={1}>
                 <Grid container alignItems="center" justifyContent="center" m={1}>
-                    <Pagination onChange={onPageChange} count={result.pages} disabled={result.pages <= 1} page={page} />
+                    <Pagination onChange={onPageChange} count={result.paging.total} disabled={result.paging.total <= 1} page={page} />
                 </Grid>
             </Grid>
 
+            <ConfirmationDialog
+                open={dialogOpen}
+                onClose={handleCloseDialog}
+                onDelete={handleConfirmDelete}
+            />
+
         </PageContainer>
-  )
+    )
 }
 
 export default LocalMusicPage;

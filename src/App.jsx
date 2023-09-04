@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { io } from "socket.io-client";
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import AuthRouter from './routes/AuthRouter';
-import { appendDownloadLog, clearTag, updateTag } from './store/slices';
+import { appendDownloadLog, clearTag, setOnline, updateTag } from './store/slices';
 import { baselightTheme, basedarkTheme } from "./theme";
 import { CheckinAuth } from './components/ui';
 import Router from './routes/Router';
@@ -30,10 +30,10 @@ function App() {
         dispatch(updateTag(payload))
         setTimeout(() => dispatch(clearTag()), 3000);
       });
-      socket.on('download-progress', ( payload ) => {
-        console.log(payload);
-        dispatch(appendDownloadLog(payload));        
-      });
+      socket.on('download-progress', ( payload ) => dispatch(appendDownloadLog(payload)));
+      socket.on('connect', () => dispatch(setOnline({online: true})));
+      socket.on('disconnect', () =>  dispatch(setOnline({online: false})));
+
     }
   }, [status]);
 
