@@ -20,9 +20,9 @@ const Profile = () => {
   
   const {showAll} = useSelector(state => state.ui);
   const {user} = useSelector(state => state.auth);
+  const isAdmin = user.roles.includes('ADMIN_ROLE');
   const dispatch = useDispatch();
   const onChangeShowAll = (_, value) => dispatch(setShowAll({showAll: value}))
-  const isAdmin = user.roles.includes('ADMIN_ROLE');
 
   const [anchorEl2, setAnchorEl2] = useState(null);
   const handleClick2 = (event) => {

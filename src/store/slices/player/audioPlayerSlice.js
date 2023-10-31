@@ -39,6 +39,10 @@ export const audioPlayerSlice = createSlice({
                 }
             } else {
                 state.songs = [...state.songs, ...payload.songs];
+                if (payload.songs.length > 0) {
+                    state.currentSongIndex = 0;
+                    state.currentSong = state.songs[0];
+                }
             }
             if (payload.play && !!payload.replace) {
                 state.isPlaying = payload.play;

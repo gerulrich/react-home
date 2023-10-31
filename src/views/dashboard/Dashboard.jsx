@@ -10,6 +10,7 @@ import StorageCard from './components/StorageCard';
 import CpuTemperatureCard from './components/CpuTemperatureCard';
 import AppCard from '../music/components/AppCard';
 import { useSelector } from 'react-redux';
+import MusicFormatChart from './components/MusicFormatChart';
 
 
 const Dashboard = () => {
@@ -115,10 +116,13 @@ const Dashboard = () => {
 
         <Grid container spacing={3} mt={2}>
 
-          <Grid item xs={12} lg={4}>
+        <Grid item xs={12} lg={6}>
+            <MusicFormatChart />
+          </Grid>
+          <Grid item xs={12} lg={6}>
             <StorageCard />
           </Grid>
-          <Grid item xs={12} lg={4}>
+          <Grid item xs={12} lg={6}>
             <CpuTemperatureCard />
           </Grid>
         </Grid>
