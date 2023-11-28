@@ -21,8 +21,6 @@ export const audioPlayerSlice = createSlice({
         setDuration: (state, {payload}) => {
             state.duration = payload?.duration;
         },
-        // TODO agregar a la cola no tiene que cambiar el isPlaing
-        // agregar metodo play(songs) que reemplace la cola y reproduzca.
         addSongsToQueue: (state, {payload}) => {
             if (!!payload.replace) {
                 state.songs = [...payload.songs];
@@ -40,8 +38,10 @@ export const audioPlayerSlice = createSlice({
             } else {
                 state.songs = [...state.songs, ...payload.songs];
                 if (payload.songs.length > 0) {
-                    state.currentSongIndex = 0;
-                    state.currentSong = state.songs[0];
+                    if (state.currentSongIndex < 0) {
+                        state.currentSongIndex = 0;
+                        state.currentSong = state.songs[0];
+                    }
                 }
             }
             if (payload.play && !!payload.replace) {
