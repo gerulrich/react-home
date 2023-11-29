@@ -31,7 +31,10 @@ export const MusicTagsPage = () => {
 
     useEffect(() => {
         homeApi.get(`/tags?q=${searchValue}&offset=${(page - 1) * 25}&limit=25`)
-            .then((res) => setResult(res.data))
+            .then((res) => {
+                console.log(res.data);
+                setResult(res.data);
+            })
             .catch(error => console.log(error));
     }, [searchValue, page]);
 
@@ -100,14 +103,14 @@ export const MusicTagsPage = () => {
                                 <Fragment key={tag.uid}>
                                     <ListItem>
                                         <ListItemAvatar>
-                                            <Avatar src={tag.album.cover_url} variant="square" />
+                                            <Avatar src={tag.album?.cover_url} variant="square" />
                                         </ListItemAvatar>
                                         <ListItemText
                                             primary={
                                                 <Typography
                                                     sx={{ display: 'inline', color: theme.palette.text.primary, fontWeight: '', textDecoration: 'none' }}
                                                     variant="body1"
-                                                >{tag.album.title}</Typography>
+                                                >{tag.album?.title}</Typography>
                                             }
                                             secondary={`RFID: ${tag.code}`} />
 

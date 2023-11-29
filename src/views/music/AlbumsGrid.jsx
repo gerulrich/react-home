@@ -1,21 +1,17 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { CardContent, Chip, Fab, Grid, IconButton, InputAdornment, OutlinedInput, Pagination, SpeedDial, SpeedDialAction, SpeedDialIcon, Stack, Tooltip, Typography } from "@mui/material";
-import { IconGridDots, IconList, IconPlayerPlay, IconSearch, IconListDetails } from "@tabler/icons-react";
+import { useSelector } from "react-redux";
+import { CardContent, Chip, Fab, Grid, SpeedDial, SpeedDialAction, SpeedDialIcon, Stack, Tooltip, Typography } from "@mui/material";
+import { IconPlayerPlay, IconListDetails } from "@tabler/icons-react";
 import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import PageContainer from "../../components/container/PageContainer";
 import BlankCard from "../../components/shared/BlankCard";
-import { addSongsToQueue } from "../../store/slices/player";
-import { usePagingSearch } from "../../hooks/usePagingSearch";
-import { useState } from "react";
-import { homeApi } from "../../api/homeApi";
-import { useNavigate } from "react-router-dom";
 
 export const AlbumsGrid = ({albums = [], onPlaySongs, onQueueSongs, onDetailsAlbum, onEditAlbum, onDeleteAlbum}) => {
-  return (
+    const { user } = useSelector(state => state.auth);
+    const isAdmin = user.roles.includes('ADMIN_ROLE');
+  
+    return (
     <>
     {albums.map((album, index) => (
         <Grid item sm={12} md={4} lg={3} key={index}>
@@ -41,17 +37,26 @@ export const AlbumsGrid = ({albums = [], onPlaySongs, onQueueSongs, onDetailsAlb
                         onClick={() => onDetailsAlbum(album)}
                     />
                     
-                    <SpeedDialAction
-                        icon={<EditIcon size="16" />}
-                        tooltipTitle="Editar"
-                        onClick={() => onEditAlbum(album)}
-                    />
+                    
+                        { isAdmin && (
+                            <SpeedDialAction
+                                icon={<EditIcon size="16" />}
+                                tooltipTitle="Editar"
+                                onClick={() => onEditAlbum(album)}
+                            />)
+                        }
 
-                    <SpeedDialAction
-                        icon={<DeleteIcon size="16" />}
-                        tooltipTitle="Eliminar"
-                        onClick={() => onDeleteAlbum(album)}
-                    />
+                        { isAdmin && (
+                            <SpeedDialAction
+                                icon={<DeleteIcon size="16" />}
+                                tooltipTitle="Eliminar"
+                                onClick={() => onDeleteAlbum(album)}
+                            />
+                            )
+                        }
+
+                            
+                
                     
                 </SpeedDial>
                 
