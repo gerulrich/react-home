@@ -3,6 +3,7 @@ import { Avatar, Container, Divider, Grid, IconButton, List, ListItem, ListItemA
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import AlbumIcon from '@mui/icons-material/Album';
 import PlayCircleFilledTwoToneIcon from '@mui/icons-material/PlayCircleFilledTwoTone';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
@@ -12,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { toTime } from '../../helpers/time';
 import { MusicQualityTag } from './MusicQualityTag';
 import { useSelector } from 'react-redux';
+import { haApi } from '../../api/haApi';
 
 const PlayButton = styled(IconButton)({
     position: 'absolute',
@@ -75,6 +77,8 @@ const AlbumListPage = ({albums=[], onPlaySongs, onQueueSongs, onDetailsAlbum, on
     handleClose();
   }
 
+  const onLocalPlay = async(album) => haApi.post(`/play/${album.uid}`)
+
   return (
     <Container>
         <Typography variant="h4" component="h1" gutterBottom>Albums</Typography>
@@ -116,10 +120,11 @@ const AlbumListPage = ({albums=[], onPlaySongs, onQueueSongs, onDetailsAlbum, on
                         secondary={album.artist} />
                     
                         {
-                          isAdmin && lgUp && (
+                          isAdmin && (
                             <ListItemSecondaryAction>
                               <IconButton onClick={() => onEditAlbum(album)}><EditIcon size="16" /></IconButton>
                               <IconButton onClick={() => onDeleteAlbum(album)}><DeleteIcon size="16" /></IconButton>
+                              <IconButton onClick={() => onLocalPlay(album)}><AlbumIcon size="16" /></IconButton>
                             </ListItemSecondaryAction>
                           )
                         }
