@@ -68,6 +68,7 @@ export const LocalMusicPage = () => {
                 album.tracks.forEach(track => {
                     track['cover_url'] = cover_url;
                     track['album_name'] = album_name;
+                    track['media_url'] = `/music/albums/${album.uid}/tracks/${track.uid}/media`;
                     if (!('artist' in track)) track['artist'] = artist;
                 });
             });

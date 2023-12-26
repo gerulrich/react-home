@@ -5,6 +5,7 @@ import { setDuration, setPosition, setNextSong } from "../../store/slices/player
 import { AudioControls } from "./AudioControls";
 import { PlayerQueue } from "./PlayerQueue";
 import { SongInfo } from "./SongInfo";
+import { homeApi } from "../../api/homeApi";
 
 export const AudioPlayer = () => {
     
@@ -35,14 +36,16 @@ export const AudioPlayer = () => {
     useEffect(() => {
         if (isPlaying && (!!currentSong.media_url)) {
             if (audioPlayer.current.src !== currentSong.media_url) {
-                audioPlayer.current.src = currentSong.media_url;
+                homeApi.get(currentSong.media_url, {maxRedirects: 0})
+                    .then(r => audioPlayer.current.src = r.headers.location);
+                
             }
             audioPlayer.current.play();
         } else {
             audioPlayer.current.pause();
             if (audioPlayer.current.src !== currentSong.media_url) {
-                audioPlayer.current.src = currentSong.media_url;
-                
+                homeApi.get(currentSong.media_url, {maxRedirects: 0})
+                    .then(r => audioPlayer.current.src = r.headers.location);
             }
         }
         setMediaMetadata(currentSong);

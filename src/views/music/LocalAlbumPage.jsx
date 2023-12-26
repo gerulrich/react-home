@@ -89,7 +89,8 @@ const LocalAlbumPage = () => {
     
       const onAddTrackToQueue = () => {
         const song = {
-            ...menuTrack, 
+            ...menuTrack,
+            media_url: `/music/albums/${albumId}/tracks/${menuTrack.uid}/media`,
             cover_url: album.cover_url
          }
          dispatch(addSongsToQueue({songs: [song], replace: false, play: true}))
@@ -98,7 +99,8 @@ const LocalAlbumPage = () => {
 
       const onPlaySong = (track) => {
          const song = {
-            ...track, 
+            ...track,
+            media_url: `/music/albums/${albumId}/tracks/${track.uid}/media`,
             cover_url: album.cover_url
          }
          dispatch(addSongsToQueue({songs: [song], replace: true, play: true}))
