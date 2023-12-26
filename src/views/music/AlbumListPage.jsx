@@ -120,13 +120,17 @@ const AlbumListPage = ({albums=[], onPlaySongs, onQueueSongs, onDetailsAlbum, on
                         secondary={album.artist} />
                     
                         {
-                          isAdmin && (
+                          (isAdmin && lgUp) ? (
                             <ListItemSecondaryAction>
                               <IconButton onClick={() => onEditAlbum(album)}><EditIcon size="16" /></IconButton>
                               <IconButton onClick={() => onDeleteAlbum(album)}><DeleteIcon size="16" /></IconButton>
                               <IconButton onClick={() => onLocalPlay(album)}><AlbumIcon size="16" /></IconButton>
                             </ListItemSecondaryAction>
-                          )
+                          ) : (isAdmin ?  (
+                            <ListItemSecondaryAction>
+                              <IconButton onClick={() => onLocalPlay(album)}><AlbumIcon size="16" /></IconButton>
+                            </ListItemSecondaryAction>
+                          ) : (<></>))
                         }
                     
                     
