@@ -6,6 +6,7 @@ import { AudioControls } from "./AudioControls";
 import { PlayerQueue } from "./PlayerQueue";
 import { SongInfo } from "./SongInfo";
 import { homeApi } from "../../api/homeApi";
+import { redirect } from "react-router-dom";
 
 export const AudioPlayer = () => {
     
@@ -33,20 +34,32 @@ export const AudioPlayer = () => {
         }
     }
 
+    const updateSongUrl = (song) => {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/api${currentSong.media_url}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`, // Añade encabezados de autenticación si es necesario
+              },
+            redirect: "manual", // This prevents automatic following of redirects
+        }).then( response => {
+            if (response.status === 301) {
+                const redirectUrl = response.headers.get("location"); // Get the new URL from the 'Location' header
+                console.log(redirectUrl);
+                audioPlayer.current.src = redirectUrl;
+            };
+        });
+    }
+
     useEffect(() => {
         if (isPlaying && (!!currentSong.media_url)) {
             if (audioPlayer.current.src !== currentSong.media_url) {
-                homeApi.get(currentSong.media_url, {maxRedirects: 0})
-                    .then(r => audioPlayer.current.src = r.headers.location);
-                
+                updateSongUrl(currentSong);
             }
             audioPlayer.current.play();
         } else {
             audioPlayer.current.pause();
             if (audioPlayer.current.src !== currentSong.media_url) {
-                if (currentSong.media_url)
-                    homeApi.get(currentSong.media_url, {maxRedirects: 0})
-                        .then(r => audioPlayer.current.src = r.headers.location);
+                updateSongUrl(currentSong);
             }
         }
         setMediaMetadata(currentSong);
