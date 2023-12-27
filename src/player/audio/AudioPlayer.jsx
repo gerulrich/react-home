@@ -35,7 +35,9 @@ export const AudioPlayer = () => {
     }
 
     const updateSongUrl = (song) => {
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/api${currentSong.media_url}`, {
+        if (song.media_url == '' || song.media_url == undefined)
+            return;
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/api${song.media_url}`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`, // Añade encabezados de autenticación si es necesario
