@@ -44,8 +44,9 @@ export const AudioPlayer = () => {
         } else {
             audioPlayer.current.pause();
             if (audioPlayer.current.src !== currentSong.media_url) {
-                homeApi.get(currentSong.media_url, {maxRedirects: 0})
-                    .then(r => audioPlayer.current.src = r.headers.location);
+                if (currentSong.media_url)
+                    homeApi.get(currentSong.media_url, {maxRedirects: 0})
+                        .then(r => audioPlayer.current.src = r.headers.location);
             }
         }
         setMediaMetadata(currentSong);
