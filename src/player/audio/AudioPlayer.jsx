@@ -34,35 +34,25 @@ export const AudioPlayer = () => {
         }
     }
 
-    const updateSongUrl = (song) => {
-        if (song.media_url == '' || song.media_url == undefined)
-            return;
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/api${song.media_url}`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`, // Añade encabezados de autenticación si es necesario
-              },
-            redirect: "manual", // This prevents automatic following of redirects
-        }).then( response => {
-            if (response.status === 301) {
-                const redirectUrl = response.headers.get("location"); // Get the new URL from the 'Location' header
-                console.log(redirectUrl);
-                audioPlayer.current.src = redirectUrl;
-            };
-        });
+    const updateSongUrl = async (song) => {
+        console.log("Find audio track url: " + song.media_url)
+        const resp = await homeApi.get(song.media_url);
+        audioPlayer.current.src = resp.data.media_url;
+        audioPlayer.current.play();
     }
 
     useEffect(() => {
         if (isPlaying && (!!currentSong.media_url)) {
             if (audioPlayer.current.src !== currentSong.media_url) {
                 updateSongUrl(currentSong);
-            }
-            audioPlayer.current.play();
+            } else {
+                audioPlayer.current.play();
+            }            
         } else {
             audioPlayer.current.pause();
-            if (audioPlayer.current.src !== currentSong.media_url) {
-                updateSongUrl(currentSong);
-            }
+            //if (audioPlayer.current.src !== currentSong.media_url) {
+                // updateSongUrl(currentSong);
+            //}
         }
         setMediaMetadata(currentSong);
     }, [currentSong]);
