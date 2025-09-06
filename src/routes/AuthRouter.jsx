@@ -10,6 +10,7 @@ const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')))
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
 const Register = Loadable(lazy(() => import('../views/authentication/Register')));
 const Login = Loadable(lazy(() => import('../views/authentication/Login')));
+const MusicQrCodePage = Loadable(lazy(() => import('../views/music/MusicQrCodePage')));
 
 
 export const AuthRouter = [
@@ -18,7 +19,8 @@ export const AuthRouter = [
     element: <BlankLayout />,
     children: [
       { path: '/', element: <Navigate to="/auth/login" /> },
-      { path: '*', element: <Navigate to="/auth/login" /> },
+  { path: '/music/qr/:code', element: <MusicQrCodePage /> },
+  { path: '*', element: <Navigate to="/auth/login" /> },
     ],
   },
   {
