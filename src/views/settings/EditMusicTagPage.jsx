@@ -22,6 +22,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from '../../hooks';
 import { useSelector } from 'react-redux';
 
+const TAG_TYPES = [
+  { value: 'RFID', label: 'RFID' },
+  { value: 'QR', label: 'QR' },
+];
+
+const SOURCE_TYPES = [
+  { value: 'local', label: 'Local' },
+  { value: 'heos', label: 'HEOS' },
+];
 
 const EditMusicTagPage = () => {
   
@@ -31,14 +40,16 @@ const EditMusicTagPage = () => {
   const { tag } = useSelector( state => state.music );
 
   const [albums, setAlbums] = useState([]);
-  const { code, album, onInputChange, formState, setFormState } = useForm({
+  const { code, type, source, album, onInputChange, formState, setFormState } = useForm({
     code: '',
+    type: 'RFID',
+    source: 'local',
     album: {}
   });
 
   const onSelectAlbum = (album) => {
-    const { code } = formState;
-    setFormState({ code, album })
+    const { code, type, source } = formState;
+    setFormState({ code, type, source, album })
   }
 
   useEffect(() => {
@@ -68,8 +79,8 @@ const EditMusicTagPage = () => {
     
   const handleSubmit = (event) => {
     event.preventDefault();
-    const {code, album } = formState;
-    const body = { code, album: album.uid};
+    const {code, type, source, album } = formState;
+    const body = { code, type, source, album: album.uid};
     homeApi.put(`/tags/${tagId}`, body).then(result => navigate(-1));
   };
 
@@ -101,6 +112,40 @@ const EditMusicTagPage = () => {
                       <Typography variant="subtitle1">Información del Tag</Typography>
               </Grid>
                 
+              <Grid item xs={12} sm={6}>
+                    <TextField
+                        label="Tipo"
+                        name="type"
+                        value={type}
+                        onChange={onInputChange}
+                        select
+                        fullWidth
+                    >
+                        {TAG_TYPES.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                    </TextField>
+                </Grid>
+
+              <Grid item xs={12} sm={6}>
+                    <TextField
+                        label="Source"
+                        name="source"
+                        value={source}
+                        onChange={onInputChange}
+                        select
+                        fullWidth
+                    >
+                        {SOURCE_TYPES.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                    </TextField>
+                </Grid>
+
               <Grid item xs={12} sm={6}>
             
                     <TextField
