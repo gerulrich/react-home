@@ -7,6 +7,7 @@ import {
   Typography,
   Autocomplete,
   Box,
+  MenuItem,
 } from '@mui/material';
 import PageContainer from '../../components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
@@ -15,6 +16,15 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from '../../hooks';
 import { useSelector } from 'react-redux';
 
+const TAG_TYPES = [
+  { value: 'RFID', label: 'RFID' },
+  { value: 'QR', label: 'QR' },
+];
+
+const SOURCE_TYPES = [
+  { value: 'local', label: 'Local' },
+  { value: 'heos', label: 'HEOS' },
+];
 
 const NewMusicTagPage = () => {
 
@@ -23,8 +33,10 @@ const NewMusicTagPage = () => {
   const { tag } = useSelector(state => state.music);
 
   const [albums, setAlbums] = useState([{ uid: '', title: '', artist: '', cover_url: '' }]);
-  const { code, album, onInputChange, formState, setFormState } = useForm({
+  const { code, album, type, source, onInputChange, formState, setFormState } = useForm({
     code: '',
+    type: 'RFID',
+    source: 'local',
     album: {
       uid: '',
       title: '',
@@ -34,8 +46,8 @@ const NewMusicTagPage = () => {
   });
 
   const onSelectAlbum = (album) => {
-    const { code } = formState;
-    setFormState({ code, album })
+    const { code, type, source } = formState;
+    setFormState({ code, type, source, album })
   }
 
   useEffect(() => {
@@ -61,20 +73,54 @@ const NewMusicTagPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const { code, album } = formState;
-    homeApi.post(`/tags`, { code, album: album.uid }).then(result => navigate(-1));
+    const { code, type, source, album } = formState;
+    homeApi.post(`/tags`, { code, type, source, album: album.uid }).then(result => navigate(-1));
   };
 
   const handleCancel = () => navigate(-1);
 
   return (
     <PageContainer title="React Home">
-      <DashboardCard title="Editar Music Tag">
+      <DashboardCard title="Nuevo Music Tag">
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
 
             <Grid item xs={12}>
               <Typography variant="subtitle1">Información del Tag</Typography>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Tipo"
+                name="type"
+                value={type}
+                onChange={onInputChange}
+                select
+                fullWidth
+              >
+                {TAG_TYPES.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Source"
+                name="source"
+                value={source}
+                onChange={onInputChange}
+                select
+                fullWidth
+              >
+                {SOURCE_TYPES.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Grid>
 
             <Grid item xs={12} sm={6}>

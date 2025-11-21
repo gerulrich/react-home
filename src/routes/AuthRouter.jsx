@@ -19,8 +19,8 @@ export const AuthRouter = [
     element: <BlankLayout />,
     children: [
       { path: '/', element: <Navigate to="/auth/login" /> },
-  { path: '/music/qr/:code', element: <MusicQrCodePage /> },
-  { path: '*', element: <Navigate to="/auth/login" /> },
+      { path: '/music/qr/:code', element: <MusicQrCodePage /> },
+      { path: '*', element: <Navigate to="/auth/login" /> },
     ],
   },
   {
