@@ -36,6 +36,8 @@ const UsersPage = Loadable(lazy(() => import('../views/settings/UsersPage')));
 
 const TodosPage = Loadable(lazy(() => import('../views/todos/TodoPage')));
 
+const MusicQrCodePage = Loadable(lazy(() => import('../views/music/MusicQrCodePage')));
+
 export const Router = [
   {
     path: '/',
@@ -67,6 +69,8 @@ export const Router = [
       // Others
       { path: '/todos', exact: true, element: <TodosPage /> },
       { path: '*', element: <Navigate to="/" /> },
+
+      { path: '/music/qr/:code', element: <MusicQrCodePage /> },
     ],
   },
 ];
