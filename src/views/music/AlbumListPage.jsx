@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import { Avatar, Container, Divider, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, Menu, MenuItem, Typography, styled, useMediaQuery, useTheme } from '@mui/material';
+import { Avatar, Container, Divider, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, Menu, MenuItem, Typography, styled, useMediaQuery, useTheme, Snackbar, Alert } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import { toTime } from '../../helpers/time';
 import { MusicQualityTag } from './MusicQualityTag';
 import { useSelector } from 'react-redux';
-import { haApi } from '../../api/haApi';
+import { homeApi } from '../../api/homeApi';
 
 const PlayButton = styled(IconButton)({
     position: 'absolute',
@@ -26,6 +26,7 @@ const AlbumListPage = ({albums=[], onPlaySongs, onQueueSongs, onDetailsAlbum, on
   const [menuTrack, setMenuTrack] = useState(null);
   const [expandedAlbumId, setExpandedAlbumId] = useState(null);
   const [hovered, setHovered] = useState(null);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const {user} = useSelector(state => state.auth);
   const isAdmin = user.roles.includes('ADMIN_ROLE');
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
@@ -77,7 +78,19 @@ const AlbumListPage = ({albums=[], onPlaySongs, onQueueSongs, onDetailsAlbum, on
     handleClose();
   }
 
-  const onLocalPlay = async(album) => haApi.post(`/play/${album.uid}`)
+  const onLocalPlay = async(album) => {
+    try {
+      await homeApi.post(`/music/albums/${album.uid}/play`);
+      setSnackbar({ open: true, message: 'Reproduciendo álbum localmente', severity: 'success' });
+    } catch (err) {
+      console.error('Error al reproducir localmente:', err);
+      setSnackbar({ open: true, message: 'Error al reproducir localmente', severity: 'error' });
+    }
+  }
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  }
 
   return (
     <Container>
@@ -192,6 +205,17 @@ const AlbumListPage = ({albums=[], onPlaySongs, onQueueSongs, onDetailsAlbum, on
           <ListItemText>Agregar al final de la lista</ListItemText>
       </MenuItem>
       </Menu>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
 
     </Container>
   );
