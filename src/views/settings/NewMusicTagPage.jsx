@@ -24,6 +24,7 @@ const TAG_TYPES = [
 const SOURCE_TYPES = [
   { value: 'local', label: 'Local' },
   { value: 'heos', label: 'HEOS' },
+  { value: 'ma', label: 'Music Assistant' },
 ];
 
 const NewMusicTagPage = () => {
